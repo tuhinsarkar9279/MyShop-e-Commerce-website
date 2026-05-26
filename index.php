@@ -144,21 +144,21 @@
             <div class="carousel-inner">
 
                 <div class="carousel-item active">
-                    <img src="https://picsum.photos/id/237/200/400"
+                    <img src="assets\img\post1.png"
                         class="d-block w-100"
                         height="500px"
                         alt="Banner 1">
                 </div>
 
                 <div class="carousel-item">
-                    <img src="https://picsum.photos/id/238/200/400"
+                    <img src="assets\img\post2.png"
                         class="d-block w-100"
                         height="500px"
                         alt="Banner 2">
                 </div>
 
                 <div class="carousel-item">
-                    <img src="https://picsum.photos/id/239/200/400"
+                    <img src="assets\img\post3.png"
                         class="d-block w-100"
                         height="500px"
                         alt="Banner 3">
