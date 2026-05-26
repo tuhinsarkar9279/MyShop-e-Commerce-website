@@ -690,7 +690,7 @@
                                 <div class="ms-3">
 
                                     <h5 class="mb-0">
-                                        Priya Das
+                                        Pritam Das
                                     </h5>
 
                                     <small class="text-muted">
