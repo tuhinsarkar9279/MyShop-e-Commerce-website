@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body class="bg-light">
+    <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
+        <div class="container">
+
+            <div class="container-fluid align-items-center d-flex">
+
+                <!-- Logo -->
+                <a class="navbar-brand fw-bold" href="index.php">
+                    <img style="width: 25%;" src="assets/img/logo.png" alt="logo">
+
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navbar Content -->
+                <div class="collapse navbar-collapse justify-content-between"
+                    id="navbarSupportedContent">
+
+                    <!-- Search Bar -->
+                    <form class="d-flex mx-auto w-50" role="search">
+                        <input class="form-control me-2"
+                            type="search"
+                            placeholder="Search Products..."
+                            aria-label="Search">
+
+                        <button class="btn btn-dark" type="submit">
+                            Search
+                        </button>
+                    </form>
+
+                    <!-- Right Side Icons -->
+                    <div class="d-flex align-items-center gap-3">
+
+                        <!-- Wishlist -->
+                        <a href="wishlist.php"
+                            class="text-decoration-none text-dark">
+
+                            <i class="bi bi-heart fs-4"></i>
+                        </a>
+
+                        <!-- Cart -->
+                        <a href="cart.php"
+                            class="text-decoration-none text-dark position-relative">
+
+                            <i class="bi bi-cart3 fs-4"></i>
+
+                            <!-- Cart Count -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                0
+                            </span>
+                        </a>
+
+                        <!-- Profile -->
+                        <a href="profile.php"
+                            class="text-decoration-none text-dark">
+
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Wishlist Section -->
+    <section class="container my-5">
+
+        <!-- Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2 class="fw-bold">
+                My Wishlist
+            </h2>
+
+        </div>
+
+        <!-- Wishlist Products -->
+        <div class="row g-4">
+
+            <!-- Product 1 -->
+            <div class="col-lg-3 col-md-6">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <!-- Wishlist Icon -->
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <button class="btn btn-danger rounded-circle">
+
+                            <i class="bi bi-heart-fill"></i>
+
+                        </button>
+
+                    </div>
+
+                    <!-- Product Image -->
+                    <img src="images/laptop.jpg"
+                        class="card-img-top"
+                        height="250"
+                        style="object-fit:cover;">
+
+                    <!-- Product Details -->
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Gaming Laptop
+                        </h5>
+
+                        <p class="text-success fw-bold">
+                            ₹55,000
+                        </p>
+
+                        <div class="text-warning mb-3">
+                            ★★★★☆
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-dark">
+
+                                <i class="bi bi-cart"></i>
+                                Add to Cart
+
+                            </button>
+
+                            <button class="btn btn-outline-danger">
+
+                                Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Product 2 -->
+            <div class="col-lg-3 col-md-6">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <button class="btn btn-danger rounded-circle">
+
+                            <i class="bi bi-heart-fill"></i>
+
+                        </button>
+
+                    </div>
+
+                    <img src="images/shoes.jpg"
+                        class="card-img-top"
+                        height="250"
+                        style="object-fit:cover;">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Sports Shoes
+                        </h5>
+
+                        <p class="text-success fw-bold">
+                            ₹2,499
+                        </p>
+
+                        <div class="text-warning mb-3">
+                            ★★★★★
+                        </div>
+
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-dark">
+
+                                <i class="bi bi-cart"></i>
+                                Add to Cart
+
+                            </button>
+
+                            <button class="btn btn-outline-danger">
+
+                                Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Product 3 -->
+            <div class="col-lg-3 col-md-6">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <button class="btn btn-danger rounded-circle">
+
+                            <i class="bi bi-heart-fill"></i>
+
+                        </button>
+
+                    </div>
+
+                    <img src="images/perfume.jpg"
+                        class="card-img-top"
+                        height="250"
+                        style="object-fit:cover;">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Perfume
+                        </h5>
+
+                        <p class="text-success fw-bold">
+                            ₹1,299
+                        </p>
+
+                        <div class="text-warning mb-3">
+                            ★★★★☆
+                        </div>
+
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-dark">
+
+                                <i class="bi bi-cart"></i>
+                                Add to Cart
+
+                            </button>
+
+                            <button class="btn btn-outline-danger">
+
+                                Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Product 4 -->
+            <div class="col-lg-3 col-md-6">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="position-absolute top-0 end-0 p-2">
+
+                        <button class="btn btn-danger rounded-circle">
+
+                            <i class="bi bi-heart-fill"></i>
+
+                        </button>
+
+                    </div>
+
+                    <img src="images/headphone.jpg"
+                        class="card-img-top"
+                        height="250"
+                        style="object-fit:cover;">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Headphone
+                        </h5>
+
+                        <p class="text-success fw-bold">
+                            ₹3,999
+                        </p>
+
+                        <div class="text-warning mb-3">
+                            ★★★★★
+                        </div>
+
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-dark">
+
+                                <i class="bi bi-cart"></i>
+                                Add to Cart
+
+                            </button>
+
+                            <button class="btn btn-outline-danger">
+
+                                Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="bg-dark text-light pt-5 mt-5 pb-3">
+
+        <div class="container">
+
+            <div class="row">
+
+                <!-- Company Info -->
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <h3 class="fw-bold mb-3">
+                        MyShop
+                    </h3>
+
+                    <p class="text-light">
+
+                        Your one-stop online shopping destination
+                        for electronics, fashion, shoes,
+                        beauty products, and more.
+
+                    </p>
+
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Quick Links
+                    </h5>
+
+                    <ul class="list-unstyled">
+
+                        <li class="mb-2">
+                            <a href="index.html"
+                                class="text-decoration-none text-light">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="products.html"
+                                class="text-decoration-none text-light">
+                                Products
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="about.html"
+                                class="text-decoration-none text-light">
+                                About
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="contact.html"
+                                class="text-decoration-none text-light">
+                                Contact
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <!-- Categories -->
+                <div class="col-lg-3 col-md-6 mb-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Categories
+                    </h5>
+
+                    <ul class="list-unstyled">
+
+                        <li class="mb-2">Electronics</li>
+                        <li class="mb-2">Fashion</li>
+                        <li class="mb-2">Shoes</li>
+                        <li class="mb-2">Beauty</li>
+                        <li class="mb-2">Furniture</li>
+
+                    </ul>
+
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-3 col-md-6 mb-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Contact Us
+                    </h5>
+
+                    <p class="mb-2">
+                        📍 Agartala, Tripura
+                    </p>
+
+                    <p class="mb-2">
+                        📞 +91 9876543210
+                    </p>
+
+                    <p class="mb-2">
+                        ✉ support@myshop.com
+                    </p>
+
+                    <!-- Social Icons -->
+                    <div class="mt-3 d-flex gap-3">
+
+                        <a href="#"
+                            class="text-light text-decoration-none">
+
+                            <i class="bi bi-facebook fs-5"></i>
+
+                        </a>
+
+                        <a href="#"
+                            class="text-light text-decoration-none">
+
+                            <i class="bi bi-instagram fs-5"></i>
+
+                        </a>
+
+                        <a href="#"
+                            class="text-light text-decoration-none">
+
+                            <i class="bi bi-twitter-x fs-5"></i>
+
+                        </a>
+
+                        <a href="#"
+                            class="text-light text-decoration-none">
+
+                            <i class="bi bi-youtube fs-5"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Bottom Footer -->
+            <hr class="border-light">
+
+            <div class="text-center">
+
+                <p class="mb-0">
+
+                    © 2026 MyShop. All Rights Reserved.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
