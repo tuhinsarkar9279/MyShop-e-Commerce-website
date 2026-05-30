@@ -1,3 +1,16 @@
+<?php
+
+include 'connect.php';
+
+/* Fetch Banner Images */
+$query = "SELECT * FROM banners";
+
+$result = mysqli_query($conn, $query);
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,81 +20,80 @@
     <title>E-Commerce</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="query.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
+
         <div class="container">
 
-            <div class="container-fluid align-items-center d-flex">
+            <div class="container-fluid p-0 align-items-center d-flex">
 
                 <!-- Logo -->
-                <a class="navbar-brand fw-bold" href="index.php">
-                    <img style="width: 25%;" src="assets/img/logo.png" alt="logo">
+                <a class=" " href="index.php">
+                    <img style="width: 6.25em;" src="assets/img/logo.png" alt="logo">
 
                 </a>
 
                 <!-- Mobile Toggle -->
-                <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
 
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
                 <!-- Navbar Content -->
-                <div class="collapse navbar-collapse justify-content-between"
-                    id="navbarSupportedContent">
 
-                    <!-- Search Bar -->
-                    <form class="d-flex mx-auto w-50" role="search">
-                        <input class="form-control me-2"
-                            type="search"
-                            placeholder="Search Products..."
-                            aria-label="Search">
 
-                        <button class="btn btn-dark" type="submit">
-                            Search
-                        </button>
-                    </form>
+                <!-- Search Bar -->
+                <form class="d-flex mx-auto position-relative" role="search">
 
-                    <!-- Right Side Icons -->
-                    <div class="d-flex align-items-center gap-3">
+                    <!-- Search Input -->
+                    <input class="form-control pe-5"
+                        type="search"
+                        placeholder="Search Products..."
+                        aria-label="Search">
 
-                        <!-- Wishlist -->
-                        <a href="wishlist.php"
-                            class="text-decoration-none text-dark">
+                    <!-- Search Icon Button -->
+                    <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        type="submit">
 
-                            <i class="bi bi-heart fs-4"></i>
-                        </a>
+                        <i class="bi bi-search fs-5"></i>
 
-                        <!-- Cart -->
-                        <a href="cart.php"
-                            class="text-decoration-none text-dark position-relative">
+                    </button>
 
-                            <i class="bi bi-cart3 fs-4"></i>
+                </form>
+                <!-- Right Side Icons -->
+                <div class="d-flex align-items-center gap-3">
 
-                            <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
-                        </a>
+                    <!-- Wishlist -->
+                    <a href="wishlist.php"
+                        class="text-decoration-none text-dark">
 
-                        <!-- Profile -->
-                        <a href="profile.php"
-                            class="text-decoration-none text-dark">
+                        <i class="bi bi-heart fs-4"></i>
+                    </a>
 
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
+                    <!-- Cart -->
+                    <a href="cart.php"
+                        class="text-decoration-none text-dark position-relative">
 
-                    </div>
+                        <i class="bi bi-cart3 fs-4"></i>
+
+                        <!-- Cart Count -->
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                        </span>
+                    </a>
+
+                    <!-- Profile -->
+                    <a href="profile.php"
+                        class="text-decoration-none text-dark">
+
+                        <i class="bi bi-person-circle fs-4"></i>
+                    </a>
 
                 </div>
+
             </div>
+        </div>
         </div>
     </nav>
 
@@ -89,32 +101,25 @@
 
     <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="" id="navbarNav">
-                    <ul class="navbar-nav d-flex justify-content-between">
+            <div class="container barr">
+
+                <div class="">
+                    <ul class="navv p-0 d-flex justify-content-between">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active" aria-current="page" href="index.php"><b>Home</b></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
+                            <a class="nav-link" href="about.php"><b>About</b></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Category</a>
+                            <a class="nav-link" href="allproducts.php"><b>Category</b></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php"><b>Cart</b></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Product Details</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Cart</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Checkout</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
+                            <a class="nav-link" href="osummary.php"><b>Checkout</b></a>
                         </li>
                     </ul>
                 </div>
@@ -124,9 +129,9 @@
 
 
 
-    <div class="det mx-2">
+    <div class="det mx-2 ">
         <!-- Bootstrap Carousel -->
-        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div id="carouselExample" class="carousel slide simg" data-bs-ride="carousel">
 
             <!-- Indicators -->
             <div class="carousel-indicators">
@@ -141,28 +146,109 @@
             </div>
 
             <!-- Images -->
-            <div class="carousel-inner">
+            <div id="carouselExample"
+                class="carousel slide"
+                data-bs-ride="carousel">
 
-                <div class="carousel-item active">
-                    <img src="assets\img\post1.png"
-                        class="d-block w-100"
-                        height="500px"
-                        alt="Banner 1">
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+
+                    <?php
+
+                    $active = true;
+                    $count = 0;
+
+                    $indicatorQuery =
+                        mysqli_query(
+                            $conn,
+                            "SELECT * FROM banners"
+                        );
+
+                    while ($row =
+                        mysqli_fetch_assoc($indicatorQuery)
+                    ) {
+
+                    ?>
+
+                        <button type="button"
+                            data-bs-target="#carouselExample"
+                            data-bs-slide-to="<?php echo $count; ?>"
+
+                            class="<?php
+                                    if ($active) {
+                                        echo 'active';
+                                    }
+                                    ?>">
+
+                        </button>
+
+                    <?php
+
+                        $active = false;
+                        $count++;
+                    } ?>
+
                 </div>
 
-                <div class="carousel-item">
-                    <img src="assets\img\post2.png"
-                        class="d-block w-100"
-                        height="500px"
-                        alt="Banner 2">
+                <!-- Carousel Images -->
+                <div class="carousel-inner carousel slide slid" data-bs-ride="carousel" data-bs-interval="3000">
+
+                    <?php
+
+                    $active = true;
+
+                    while ($row =
+                        mysqli_fetch_assoc($result)
+                    ) {
+
+                    ?>
+
+                        <div class="carousel-item
+            <?php
+                        if ($active) {
+                            echo 'active';
+                        }
+            ?>">
+
+                            <img src="uploads/<?php
+                                                echo $row['image']; ?>"
+
+                                class="d-block w-100"
+
+                                height="500px"
+
+
+
+                                alt="Banner">
+
+                        </div>
+
+                    <?php
+
+                        $active = false;
+                    } ?>
+
                 </div>
 
-                <div class="carousel-item">
-                    <img src="assets\img\post3.png"
-                        class="d-block w-100"
-                        height="500px"
-                        alt="Banner 3">
-                </div>
+                <!-- Previous Button -->
+                <button class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#carouselExample"
+                    data-bs-slide="prev">
+
+                    <span class="carousel-control-prev-icon"></span>
+
+                </button>
+
+                <!-- Next Button -->
+                <button class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#carouselExample"
+                    data-bs-slide="next">
+
+                    <span class="carousel-control-next-icon"></span>
+
+                </button>
 
             </div>
 
@@ -239,295 +325,132 @@
                 <!-- Category Tabs -->
                 <ul class="nav nav-pills mb-4 justify-content-center flex-wrap">
 
-                    <li class="nav-item m-1">
-                        <button class="nav-link active"
-                            data-bs-toggle="tab"
-                            data-bs-target="#electronics">
-                            Electronics
-                        </button>
-                    </li>
+                    <?php
 
-                    <li class="nav-item m-1">
-                        <button class="nav-link"
-                            data-bs-toggle="tab"
-                            data-bs-target="#fashion">
-                            Fashion
-                        </button>
-                    </li>
+                    $first = true;
 
-                    <li class="nav-item m-1">
-                        <button class="nav-link"
-                            data-bs-toggle="tab"
-                            data-bs-target="#shoes">
-                            Shoes
-                        </button>
-                    </li>
+                    $cat_query = mysqli_query(
+                        $conn,
+                        "SELECT * FROM categories"
+                    );
 
-                    <li class="nav-item m-1">
-                        <button class="nav-link"
-                            data-bs-toggle="tab"
-                            data-bs-target="#beauty">
-                            Beauty
-                        </button>
-                    </li>
+                    while ($cat = mysqli_fetch_assoc($cat_query)) {
 
-                    <li class="nav-item m-1">
-                        <button class="nav-link"
-                            data-bs-toggle="tab"
-                            data-bs-target="#furniture">
-                            Furniture
-                        </button>
-                    </li>
+                    ?>
+
+                        <li class="nav-item m-1">
+
+                            <button class="nav-link <?php if ($first) echo 'active'; ?>"
+                                data-bs-toggle="tab"
+                                data-bs-target="#cat<?php echo $cat['id']; ?>">
+
+                                <?php echo $cat['category_name']; ?>
+
+                            </button>
+
+                        </li>
+
+                    <?php
+
+                        $first = false;
+                    }
+
+                    ?>
 
                 </ul>
 
                 <!-- Tab Content -->
                 <div class="tab-content">
 
-                    <!-- Electronics -->
-                    <div class="tab-pane fade show active" id="electronics">
+                    <?php
 
-                        <div class="row g-4">
+                    $first = true;
 
-                            <!-- Product -->
-                            <div class="col-md-3">
+                    $cat_query = mysqli_query(
+                        $conn,
+                        "SELECT * FROM categories"
+                    );
 
-                                <div class="card shadow-sm border-0 h-100">
+                    while ($cat = mysqli_fetch_assoc($cat_query)) {
 
-                                    <img src="images/laptop.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
+                    ?>
 
-                                    <div class="card-body">
+                        <div class="tab-pane fade <?php if ($first) echo 'show active'; ?>"
+                            id="cat<?php echo $cat['id']; ?>">
 
-                                        <h5>Laptop</h5>
+                            <div class="row g-4">
 
-                                        <p class="fw-bold text-success">
-                                            ₹45,000
-                                        </p>
+                                <?php
 
-                                        <div class="text-warning mb-3">
-                                            ★★★★☆
+                                $products = mysqli_query(
+                                    $conn,
+
+                                    "SELECT * FROM products
+                                  WHERE category_id='" . $cat['id'] . "'
+                                   AND status='approved'
+                                  LIMIT 5"
+                                );
+
+                                while ($row = mysqli_fetch_assoc($products)) {
+
+                                ?>
+
+                                    <div class="col-lg-3 col-md-6">
+
+                                        <div class="card shadow-sm border-0 h-100">
+
+                                            <img src="uploads/<?php echo $row['product_image']; ?>"
+                                                class="card-img-top"
+                                                height="220"
+                                                style="object-fit:cover;">
+
+                                            <div class="card-body">
+
+                                                <h5>
+                                                    <?php echo $row['product_name']; ?>
+                                                </h5>
+
+                                                <p class="fw-bold text-success">
+                                                    ₹<?php echo $row['product_price']; ?>
+                                                </p>
+
+                                                <div class="d-flex justify-content-between">
+
+                                                    <a href="add-cart.php?id=<?php echo $row['id']; ?>"
+                                                        class="btn btn-dark">
+
+                                                        <i class="bi bi-cart-plus"></i>
+                                                        Add to Cart
+
+                                                    </a>
+
+                                                    <a href="wishlist.php?id=<?php echo $row['id']; ?>"
+                                                        class="btn btn-outline-danger fs-4">
+
+                                                        ♥
+
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                        <div class="procw d-flex justify-content-between">
-                                            <button class="btn btn-dark">
-                                                Add to Cart
-                                            </button>
-                                            <a href="#"
-                                                class="btn align-items-center justify-content-center btn-outline-danger">
-                                                <ion-icon class=" fs-4 mt-2" name="heart-outline"></ion-icon>
-                                            </a>
-                                        </div>
-
 
                                     </div>
 
-                                </div>
-
-                            </div>
-
-                            <!-- Product -->
-                            <div class="col-md-3">
-
-                                <div class="card shadow-sm border-0 h-100">
-
-                                    <img src="images/headphone.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
-
-                                    <div class="card-body">
-
-                                        <h5>Headphone</h5>
-
-                                        <p class="fw-bold text-success">
-                                            ₹2,999
-                                        </p>
-
-                                        <div class="text-warning mb-3">
-                                            ★★★★★
-                                        </div>
-
-                                        <div class="procw d-flex justify-content-between">
-                                            <button class="btn btn-dark">
-                                                Add to Cart
-                                            </button>
-                                            <a href="#"
-                                                class="btn align-items-center justify-content-center btn-outline-danger">
-                                                <ion-icon class=" fs-4 mt-2" name="heart-outline"></ion-icon>
-                                            </a>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Fashion -->
-                    <div class="tab-pane fade" id="fashion">
-
-                        <div class="row g-4">
-
-                            <div class="col-md-3">
-
-                                <div class="card shadow-sm border-0 h-100">
-
-                                    <img src="images/shirt.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
-
-                                    <div class="card-body">
-
-                                        <h5>T-Shirt</h5>
-
-                                        <p class="fw-bold text-success">
-                                            ₹799
-                                        </p>
-
-                                        <div class="text-warning mb-3">
-                                            ★★★★☆
-                                        </div>
-
-                                        <button class="btn btn-dark w-100">
-                                            Add to Cart
-                                        </button>
-
-                                    </div>
-
-                                </div>
+                                <?php } ?>
 
                             </div>
 
                         </div>
 
-                    </div>
+                    <?php
 
-                    <!-- Shoes -->
-                    <div class="tab-pane fade" id="shoes">
+                        $first = false;
+                    }
 
-                        <div class="row g-4">
-
-                            <div class="col-md-3">
-
-                                <div class="card shadow-sm border-0 h-100">
-
-                                    <img src="images/shoes.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
-
-                                    <div class="card-body">
-
-                                        <h5>Sports Shoes</h5>
-
-                                        <p class="fw-bold text-success">
-                                            ₹2,499
-                                        </p>
-
-                                        <div class="text-warning mb-3">
-                                            ★★★★★
-                                        </div>
-
-                                        <button class="btn btn-dark w-100">
-                                            Add to Cart
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Beauty -->
-                    <div class="tab-pane fade" id="beauty">
-
-                        <div class="row g-4">
-
-                            <div class="col-md-3">
-
-                                <div class="card shadow-sm border-0 h-100">
-
-                                    <img src="images/perfume.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
-
-                                    <div class="card-body">
-
-                                        <h5>Perfume</h5>
-
-                                        <p class="fw-bold text-success">
-                                            ₹1,299
-                                        </p>
-
-                                        <div class="text-warning mb-3">
-                                            ★★★★☆
-                                        </div>
-
-                                        <button class="btn btn-dark w-100">
-                                            Add to Cart
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Furniture -->
-                    <div class="tab-pane fade" id="furniture">
-
-                        <div class="row g-4">
-
-                            <div class="col-md-3">
-
-                                <div class="card shadow-sm border-0 h-100">
-
-                                    <img src="images/chair.jpg"
-                                        class="card-img-top"
-                                        height="220px"
-                                        style="object-fit: cover;">
-
-                                    <div class="card-body">
-
-                                        <h5>Chair</h5>
-
-                                        <p class="fw-bold text-success">
-                                            ₹3,999
-                                        </p>
-
-                                        <div class="text-warning mb-3">
-                                            ★★★★★
-                                        </div>
-
-                                        <button class="btn btn-dark w-100">
-                                            Add to Cart
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    ?>
 
                 </div>
 

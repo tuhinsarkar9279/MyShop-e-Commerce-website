@@ -1,3 +1,76 @@
+<?php
+
+include 'connect.php';
+
+/* Approve Product */
+
+if (isset($_GET['approve'])) {
+
+    $id = $_GET['approve'];
+
+    mysqli_query(
+
+        $conn,
+
+        "UPDATE products
+
+        SET status='approved'
+
+        WHERE id='$id'"
+
+    );
+
+    header("Location: admin-products.php");
+    exit();
+}
+
+/* Delete Product */
+
+if (isset($_GET['delete'])) {
+
+    $id = $_GET['delete'];
+
+    $fetch = mysqli_query(
+
+        $conn,
+
+        "SELECT * FROM products
+        WHERE id='$id'"
+
+    );
+
+    $data = mysqli_fetch_assoc($fetch);
+
+    if (
+        !empty($data['product_image'])
+        &&
+        file_exists(
+            "uploads/" . $data['product_image']
+        )
+    ) {
+
+        unlink(
+            "uploads/" . $data['product_image']
+        );
+    }
+
+    mysqli_query(
+
+        $conn,
+
+        "DELETE FROM products
+        WHERE id='$id'"
+
+    );
+
+    header("Location: admin-products.php");
+    exit();
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -307,92 +380,166 @@
                     </div>
 
                     <!-- Recent Orders -->
-                    <div class="card border-0 shadow-sm mt-5">
+                    <div class="table-responsive">
 
-                        <div class="card-body">
+                        <table class="table table-bordered table-hover">
 
-                            <h4 class="fw-bold mb-4">
-                                Recent Orders
-                            </h4>
+                            <thead class="table-dark">
 
-                            <div class="table-responsive">
+                                <tr>
 
-                                <table class="table align-middle">
+                                    <th>Image</th>
+                                    <th>Seller</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
 
-                                    <thead>
+                                </tr>
 
-                                        <tr>
+                            </thead>
 
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Product</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
+                            <tbody>
 
-                                        </tr>
+                                <?php
 
-                                    </thead>
+                                $query = mysqli_query(
 
-                                    <tbody>
+                                    $conn,
 
-                                        <tr>
+                                    "SELECT products.*,
 
-                                            <td>#1001</td>
-                                            <td>Tuhin Sarkar</td>
-                                            <td>Laptop</td>
-                                            <td>₹55,000</td>
+        users.name AS seller_name,
 
-                                            <td>
+        categories.category_name
 
-                                                <span class="badge bg-success">
-                                                    Delivered
-                                                </span>
+        FROM products
 
-                                            </td>
+        LEFT JOIN users
 
-                                        </tr>
+        ON products.seller_id =
+        users.id
 
-                                        <tr>
+        LEFT JOIN categories
 
-                                            <td>#1002</td>
-                                            <td>Rahul Das</td>
-                                            <td>Shoes</td>
-                                            <td>₹2,499</td>
+        ON products.category_id =
+        categories.id
 
-                                            <td>
+        ORDER BY products.id DESC"
 
-                                                <span class="badge bg-warning text-dark">
-                                                    Shipping
-                                                </span>
+                                );
 
-                                            </td>
+                                while ($row =
+                                    mysqli_fetch_assoc($query)
+                                ) {
 
-                                        </tr>
+                                ?>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>#1003</td>
-                                            <td>Priya Roy</td>
-                                            <td>Perfume</td>
-                                            <td>₹1,299</td>
+                                        <td>
 
-                                            <td>
+                                            <img src="uploads/<?php
+                                                                echo $row['product_image']; ?>"
 
-                                                <span class="badge bg-danger">
-                                                    Cancelled
-                                                </span>
+                                                width="70">
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                        <td>
 
-                                    </tbody>
+                                            <?php
+                                            echo $row['seller_name'];
+                                            ?>
 
-                                </table>
+                                        </td>
 
-                            </div>
+                                        <td>
 
-                        </div>
+                                            <?php
+                                            echo $row['product_name'];
+                                            ?>
+
+                                        </td>
+
+                                        <td>
+
+                                            <?php
+                                            echo $row['category_name'];
+                                            ?>
+
+                                        </td>
+
+                                        <td>
+
+                                            ₹<?php
+                                                echo $row['product_price'];
+                                                ?>
+
+                                        </td>
+
+                                        <td>
+
+                                            <?php
+
+                                            if ($row['status'] == "approved") {
+
+                                                echo "<span class='badge bg-success'>
+                Approved
+                </span>";
+                                            } else {
+
+                                                echo "<span class='badge bg-warning text-dark'>
+                Pending
+                </span>";
+                                            }
+
+                                            ?>
+
+                                        </td>
+
+                                        <td>
+
+                                            <?php
+
+                                            if ($row['status'] == "pending") {
+
+                                            ?>
+
+                                                <a href="?approve=<?php
+                                                                    echo $row['id']; ?>"
+
+                                                    class="btn btn-success btn-sm">
+
+                                                    Approve
+
+                                                </a>
+
+                                            <?php } ?>
+
+                                            <a href="?delete=<?php
+                                                                echo $row['id']; ?>"
+
+                                                class="btn btn-danger btn-sm"
+
+                                                onclick="return confirm(
+            'Delete this product?'
+            )">
+
+                                                Delete
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                <?php } ?>
+
+                            </tbody>
+
+                        </table>
 
                     </div>
 

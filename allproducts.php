@@ -1,3 +1,16 @@
+<?php
+
+include 'connect.php';
+
+/* Fetch Banner Images */
+$query = "SELECT * FROM banners";
+
+$result = mysqli_query($conn, $query);
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,344 +98,281 @@
             </div>
         </div>
     </nav>
+    <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="container barr">
 
+                <div class="">
+                    <ul class="navv p-0 d-flex justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php"><b>Home</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.php"><b>About</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="allproducts.php"><b>Category</b></a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php"><b>Cart</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="osummary.php"><b>Checkout</b></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container">
-        <!-- Top Filter Section -->
-        <section class="bg-white shadow-sm py-4 mb-5">
+    <!-- Filter & Sort Section -->
+    <div class="container mb-4">
 
-            <div class="container">
+        <div class="card border-0 shadow-sm">
 
-                <div class="row g-3">
+            <div class="card-body">
 
-                    <!-- Category -->
-                    <div class="col-lg-4">
+                <div class="row g-3 align-items-end">
 
-                        <select class="form-select" id="categoryFilter">
+                    <!-- Category Filter -->
+                    <div class="col-lg-6 col-md-6">
+
+                        <label class="form-label fw-bold">
+
+                            <i class="bi bi-grid"></i>
+                            Category
+
+                        </label>
+
+                        <select class="form-select"
+                            id="categoryFilter">
 
                             <option value="all">
+
                                 All Categories
+
                             </option>
 
-                            <option value="electronics">
-                                Electronics
-                            </option>
+                            <?php
 
-                            <option value="fashion">
-                                Fashion
-                            </option>
+                            $cat_query = mysqli_query(
+                                $conn,
+                                "SELECT * FROM categories"
+                            );
 
-                            <option value="shoes">
-                                Shoes
-                            </option>
+                            while ($cat = mysqli_fetch_assoc($cat_query)) {
 
-                            <option value="beauty">
-                                Beauty
-                            </option>
+                            ?>
+
+                                <option value="<?php
+                                                echo strtolower(
+                                                    $cat['category_name']
+                                                );
+                                                ?>">
+
+                                    <?php
+                                    echo $cat['category_name'];
+                                    ?>
+
+                                </option>
+
+                            <?php } ?>
 
                         </select>
 
                     </div>
 
-                    <!-- Sort -->
-                    <div class="col-lg-4">
+                    <!-- Sort By -->
+                    <div class="col-lg-6 col-md-6">
 
-                        <select class="form-select" id="sortProducts">
+                        <label class="form-label fw-bold">
+
+                            <i class="bi bi-funnel"></i>
+                            Sort By
+
+                        </label>
+
+                        <select class="form-select"
+                            id="sortProducts">
 
                             <option value="default">
-                                Sort By
+
+                                Default
+
                             </option>
 
                             <option value="low">
-                                Price Low to High
+
+                                Price: Low to High
+
                             </option>
 
                             <option value="high">
-                                Price High to Low
+
+                                Price: High to Low
+
+                            </option>
+
+                            <option value="new">
+
+                                Newest Products
+
+                            </option>
+
+                            <option value="old">
+
+                                Oldest Products
+
                             </option>
 
                         </select>
 
                     </div>
 
-                    <!-- Filter Button -->
-                    <div class="col-lg-4">
-
-                        <button class="btn btn-dark w-100"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#filterCanvas">
-
-                            <i class="bi bi-funnel"></i>
-                            Filters
-
-                        </button>
-
-                    </div>
-
                 </div>
-
-            </div>
-
-        </section>
-
-        <!-- Products -->
-        <section class="container mb-5">
-
-            <div class="row g-4" id="productContainer">
-
-                <!-- Product 1 -->
-                <div class="col-lg-3 col-md-6 product-card"
-                    data-category="electronics"
-                    data-price="55000">
-
-                    <div class="card border-0 shadow-sm h-100">
-
-                        <img src="images/laptop.jpg"
-                            class="card-img-top"
-                            height="250"
-                            style="object-fit:cover;">
-
-                        <div class="card-body">
-
-                            <h5>Gaming Laptop</h5>
-
-                            <p class="fw-bold text-success">
-                                ₹55,000
-                            </p>
-
-                            <div class="text-warning mb-3">
-                                ★★★★☆
-                            </div>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn btn-dark w-100">
-
-                                    <i class="bi bi-cart"></i>
-                                    Cart
-
-                                </button>
-
-                                <button class="btn btn-outline-danger">
-
-                                    <i class="bi bi-heart"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Product 2 -->
-                <div class="col-lg-3 col-md-6 product-card"
-                    data-category="fashion"
-                    data-price="799">
-
-                    <div class="card border-0 shadow-sm h-100">
-
-                        <img src="images/shirt.jpg"
-                            class="card-img-top"
-                            height="250"
-                            style="object-fit:cover;">
-
-                        <div class="card-body">
-
-                            <h5>T-Shirt</h5>
-
-                            <p class="fw-bold text-success">
-                                ₹799
-                            </p>
-
-                            <div class="text-warning mb-3">
-                                ★★★★★
-                            </div>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn btn-dark w-100">
-
-                                    <i class="bi bi-cart"></i>
-                                    Cart
-
-                                </button>
-
-                                <button class="btn btn-outline-danger">
-
-                                    <i class="bi bi-heart"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Product 3 -->
-                <div class="col-lg-3 col-md-6 product-card"
-                    data-category="shoes"
-                    data-price="2499">
-
-                    <div class="card border-0 shadow-sm h-100">
-
-                        <img src="images/shoes.jpg"
-                            class="card-img-top"
-                            height="250"
-                            style="object-fit:cover;">
-
-                        <div class="card-body">
-
-                            <h5>Sports Shoes</h5>
-
-                            <p class="fw-bold text-success">
-                                ₹2,499
-                            </p>
-
-                            <div class="text-warning mb-3">
-                                ★★★★☆
-                            </div>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn btn-dark w-100">
-
-                                    <i class="bi bi-cart"></i>
-                                    Cart
-
-                                </button>
-
-                                <button class="btn btn-outline-danger">
-
-                                    <i class="bi bi-heart"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Product 4 -->
-                <div class="col-lg-3 col-md-6 product-card"
-                    data-category="beauty"
-                    data-price="1299">
-
-                    <div class="card border-0 shadow-sm h-100">
-
-                        <img src="images/perfume.jpg"
-                            class="card-img-top"
-                            height="250"
-                            style="object-fit:cover;">
-
-                        <div class="card-body">
-
-                            <h5>Perfume</h5>
-
-                            <p class="fw-bold text-success">
-                                ₹1,299
-                            </p>
-
-                            <div class="text-warning mb-3">
-                                ★★★★★
-                            </div>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn btn-dark w-100">
-
-                                    <i class="bi bi-cart"></i>
-                                    Cart
-
-                                </button>
-
-                                <button class="btn btn-outline-danger">
-
-                                    <i class="bi bi-heart"></i>
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- Filter Sidebar -->
-        <div class="offcanvas offcanvas-end"
-            tabindex="-1"
-            id="filterCanvas">
-
-            <div class="offcanvas-header">
-
-                <h5>Filters</h5>
-
-                <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="offcanvas">
-                </button>
-
-            </div>
-
-            <div class="offcanvas-body">
-
-                <h6 class="fw-bold mb-3">
-                    Price Range
-                </h6>
-
-                <input type="range" class="form-range">
-
-                <h6 class="fw-bold mt-4 mb-3">
-                    Rating
-                </h6>
-
-                <div class="form-check">
-
-                    <input class="form-check-input"
-                        type="checkbox">
-
-                    <label class="form-check-label">
-                        4★ & Above
-                    </label>
-
-                </div>
-
-                <div class="form-check">
-
-                    <input class="form-check-input"
-                        type="checkbox">
-
-                    <label class="form-check-label">
-                        3★ & Above
-                    </label>
-
-                </div>
-
-                <button class="btn btn-dark w-100 mt-4">
-
-                    Apply Filters
-
-                </button>
 
             </div>
 
         </div>
+
     </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Products -->
+    <section class="container mb-5">
+
+        <div class="row g-4" id="productContainer">
+
+            <?php
+
+            $query = mysqli_query(
+
+                $conn,
+
+                "SELECT products.*,
+            categories.category_name
+
+            FROM products
+
+            LEFT JOIN categories
+
+            ON products.category_id =
+            categories.id
+
+            WHERE products.status='approved'
+
+            ORDER BY products.id DESC"
+
+            );
+
+            while ($row = mysqli_fetch_assoc($query)) {
+
+            ?>
+
+                <div class="col-lg-3 col-md-6 product-card"
+
+                    data-category="<?php
+                                    echo strtolower(
+                                        $row['category_name']
+                                    );
+                                    ?>"
+
+                    data-price="<?php
+                                echo $row['product_price'];
+                                ?>">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <!-- Product Image -->
+                        <img src="uploads/<?php
+                                            echo $row['product_image'];
+                                            ?>"
+
+                            class="card-img-top"
+
+                            height="250"
+
+                            style="object-fit:cover;">
+
+                        <div class="card-body">
+
+                            <!-- Product Name -->
+                            <h5>
+
+                                <?php
+                                echo $row['product_name'];
+                                ?>
+
+                            </h5>
+
+                            <!-- Category -->
+                            <p class="text-muted small mb-2">
+
+                                <?php
+                                echo $row['category_name'];
+                                ?>
+
+                            </p>
+
+                            <!-- Price -->
+                            <p class="fw-bold text-success">
+
+                                ₹<?php
+                                    echo $row['product_price'];
+                                    ?>
+
+                            </p>
+
+                            <!-- Rating -->
+                            <div class="text-warning mb-3">
+
+                                ★★★★☆
+
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-flex gap-2">
+
+                                <!-- Add To Cart -->
+                                <a href="add-cart.php?id=<?php
+                                                            echo $row['id'];
+                                                            ?>"
+
+                                    class="btn btn-dark w-100">
+
+                                    <i class="bi bi-cart"></i>
+                                    Cart
+
+                                </a>
+
+                                <!-- Wishlist -->
+                                <a href="wishlist.php?id=<?php
+                                                            echo $row['id'];
+                                                            ?>"
+
+                                    class="btn btn-outline-danger">
+
+                                    <i class="bi bi-heart"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <?php } ?>
+
+        </div>
+
+    </section>
     <footer class="bg-dark text-light pt-5 mt-5 pb-3">
 
         <div class="container">
