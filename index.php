@@ -78,9 +78,7 @@ $result = mysqli_query($conn, $query);
                         <i class="bi bi-cart3 fs-4"></i>
 
                         <!-- Cart Count -->
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
+
                     </a>
 
                     <!-- Profile -->
@@ -552,138 +550,86 @@ $result = mysqli_query($conn, $query);
 
                 <div class="row g-4">
 
-                    <!-- Feedback Card 1 -->
-                    <div class="col-md-4">
+                    <?php
 
-                        <div class="card shadow-sm border-0 h-100 p-3">
+                    $query = mysqli_query(
 
-                            <div class="d-flex align-items-center mb-3">
+                        $conn,
 
-                                <img src="images/user1.jpg"
-                                    class="rounded-circle"
-                                    width="60"
-                                    height="60"
-                                    style="object-fit: cover;">
+                        "SELECT *
 
-                                <div class="ms-3">
+    FROM feedback
 
-                                    <h5 class="mb-0">
-                                        Rahul Sharma
-                                    </h5>
+    ORDER BY id DESC
 
-                                    <small class="text-muted">
-                                        Verified Buyer
-                                    </small>
+    LIMIT 6"
 
-                                </div>
+                    );
 
-                            </div>
+                    while ($row = mysqli_fetch_assoc($query)) {
 
-                            <!-- Rating -->
-                            <div class="text-warning mb-3">
-                                ★★★★★
-                            </div>
+                    ?>
 
-                            <!-- Feedback -->
-                            <p class="text-muted">
+                        <div class="col-md-4">
 
-                                Amazing shopping experience.
-                                Product quality is excellent and
-                                delivery was very fast.
+                            <div class="card shadow border-0 h-100 p-3">
 
-                            </p>
+                                <div class="d-flex align-items-center mb-3">
 
-                        </div>
+                                    <img src="uploads/<?php echo $row['image']; ?>"
 
-                    </div>
+                                        class="rounded-circle"
 
-                    <!-- Feedback Card 2 -->
-                    <div class="col-md-4">
+                                        width="60"
 
-                        <div class="card shadow-sm border-0 h-100 p-3">
+                                        height="60"
 
-                            <div class="d-flex align-items-center mb-3">
+                                        style="object-fit:cover;">
 
-                                <img src="images/user2.jpg"
-                                    class="rounded-circle"
-                                    width="60"
-                                    height="60"
-                                    style="object-fit: cover;">
+                                    <div class="ms-3">
 
-                                <div class="ms-3">
+                                        <h5 class="mb-0">
 
-                                    <h5 class="mb-0">
-                                        Pritam Das
-                                    </h5>
+                                            <?php echo $row['customer_name']; ?>
 
-                                    <small class="text-muted">
-                                        Verified Buyer
-                                    </small>
+                                        </h5>
+
+                                        <small class="text-muted">
+
+                                            Verified Buyer
+
+                                        </small>
+
+                                    </div>
 
                                 </div>
 
-                            </div>
+                                <div class="text-warning mb-3">
 
-                            <!-- Rating -->
-                            <div class="text-warning mb-3">
-                                ★★★★☆
-                            </div>
+                                    <?php
 
-                            <!-- Feedback -->
-                            <p class="text-muted">
+                                    for ($i = 1; $i <= 5; $i++) {
 
-                                The website is very easy to use.
-                                I loved the product collection and offers.
+                                        echo ($i <= $row['rating'])
+                                            ? '★'
+                                            : '☆';
+                                    }
 
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Feedback Card 3 -->
-                    <div class="col-md-4">
-
-                        <div class="card shadow-sm border-0 h-100 p-3">
-
-                            <div class="d-flex align-items-center mb-3">
-
-                                <img src="images/user3.jpg"
-                                    class="rounded-circle"
-                                    width="60"
-                                    height="60"
-                                    style="object-fit: cover;">
-
-                                <div class="ms-3">
-
-                                    <h5 class="mb-0">
-                                        Aman Gupta
-                                    </h5>
-
-                                    <small class="text-muted">
-                                        Verified Buyer
-                                    </small>
+                                    ?>
 
                                 </div>
 
+                                <p class="text-muted">
+
+                                    <?php echo $row['message']; ?>
+
+                                </p>
+
                             </div>
-
-                            <!-- Rating -->
-                            <div class="text-warning mb-3">
-                                ★★★★★
-                            </div>
-
-                            <!-- Feedback -->
-                            <p class="text-muted">
-
-                                Fast delivery and great customer support.
-                                Highly recommended for online shopping.
-
-                            </p>
 
                         </div>
 
-                    </div>
+                    <?php } ?>
 
                 </div>
 

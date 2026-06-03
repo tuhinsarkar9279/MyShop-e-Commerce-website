@@ -2,12 +2,11 @@
 
 session_start();
 
-if(!isset($_SESSION['user_id'])){
+if (!isset($_SESSION['user_id'])) {
 
     header("Location: user-login.php");
 
     exit();
-
 }
 
 include 'connect.php';
@@ -15,6 +14,43 @@ include 'connect.php';
 $user_id = $_SESSION['user_id'];
 
 ?>
+<?php
+
+include 'connect.php';
+
+$user_id = $_SESSION['user_id'];
+
+$total_price = 0;
+
+/* Cart Query */
+
+$query = mysqli_query(
+
+    $conn,
+
+    "SELECT
+
+    cart.id AS cart_id,
+
+    cart.quantity,
+
+    products.*
+
+    FROM cart
+
+    JOIN products
+
+    ON cart.product_id = products.id
+
+    WHERE cart.user_id='$user_id'"
+
+);
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +60,7 @@ $user_id = $_SESSION['user_id'];
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Product Details</title>
+    <title>Cart Page</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -33,11 +69,14 @@ $user_id = $_SESSION['user_id'];
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
 </head>
 
+
+
 <body class="bg-light">
-     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
+    <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
         <div class="container">
 
             <div class="container-fluid align-items-center d-flex">
@@ -111,244 +150,75 @@ $user_id = $_SESSION['user_id'];
         </div>
     </nav>
 
-    <!-- Product Details Section -->
+    <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="container barr">
+
+                <div class="">
+                    <ul class="navv p-0 d-flex justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php"><b>Home</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.php"><b>About</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="allproducts.php"><b>Category</b></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php"><b>Cart</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="osummary.php"><b>Checkout</b></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Cart Section -->
     <section class="container my-5">
 
-        <div class="row g-5">
+        <div class="cono">
+            <h2 class="fw-bold mb-4">
+                Complete Your Order
+            </h2>
+            <p class="text-muted mb-4">
+                Review your order summary and proceed to checkout.
+            </p>
+            <div class="card p-4 shadow-sm">
+                <div class="icnn justify-content-center d-flex">
+                    <i class="bi bi-check-circle-fill fs-1 text-success"></i>
+                </div>
+                <div class="alert alert-success justify-content-center d-flex">
 
-            <!-- Product Image -->
-            <div class="col-lg-5">
+                   <h3>Your order has been placed successfully!</h3>
 
-                <div class="card border-0 shadow-sm">
-
-                    <img src="images/laptop.jpg"
-                        class="img-fluid rounded"
-                        height="500"
-                        style="object-fit:cover;">
 
                 </div>
+                <div class="thk justify-content-center d-flex">
+                    <p class="text-muted mb-4">
+                        Thank you for shopping with us. We appreciate your business and look forward to serving you again!
+                    </p>
+                </div>
 
+                <a href="index.php"
+                    class="btn btn-dark">
+                    Continue Shopping
+                </a>
             </div>
-
-            <!-- Product Details -->
-            <div class="col-lg-7">
-
-                <!-- Category -->
-                <span class="badge bg-dark mb-3">
-
-                    Electronics
-
-                </span>
-
-                <!-- Product Name -->
-                <h1 class="fw-bold mb-3">
-
-                    Gaming Laptop
-
-                </h1>
-
-                <!-- Rating -->
-                <div class="text-warning fs-5 mb-3">
-
-                    ★★★★☆
-                    <span class="text-muted fs-6">
-                        (4.5 Ratings)
-                    </span>
-
-                </div>
-
-                <!-- Price -->
-                <h2 class="text-success fw-bold mb-4">
-
-                    ₹55,000
-
-                </h2>
-
-                <!-- Description -->
-                <p class="text-muted fs-5">
-
-                    Powerful gaming laptop with high-speed processor,
-                    RTX graphics card, 16GB RAM, and ultra-fast SSD
-                    storage for smooth gaming and performance.
-
-                </p>
-
-                <!-- Features -->
-                <div class="mt-4">
-
-                    <h5 class="fw-bold mb-3">
-
-                        Product Features
-
-                    </h5>
-
-                    <ul class="list-group">
-
-                        <li class="list-group-item">
-                            Intel Core i7 Processor
-                        </li>
-
-                        <li class="list-group-item">
-                            16GB RAM
-                        </li>
-
-                        <li class="list-group-item">
-                            512GB SSD Storage
-                        </li>
-
-                        <li class="list-group-item">
-                            RTX Graphics Card
-                        </li>
-
-                    </ul>
-
-                </div>
-
-                <!-- Quantity -->
-                <div class="mt-4">
-
-                    <h5 class="fw-bold mb-3">
-
-                        Quantity
-
-                    </h5>
-
-                    <div class="d-flex align-items-center">
-
-                        <button class="btn btn-outline-dark">
-
-                            -
-
-                        </button>
-
-                        <span class="mx-4 fs-5">
-
-                            1
-
-                        </span>
-
-                        <button class="btn btn-outline-dark">
-
-                            +
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <!-- Buttons -->
-                <div class="mt-5 d-flex flex-wrap gap-3">
-
-                    <!-- Add to Cart -->
-                    <button class="btn btn-dark btn-lg px-5">
-
-                        <i class="bi bi-cart"></i>
-                        Add to Cart
-
-                    </button>
-
-                    <!-- Buy Now -->
-                    <button class="btn btn-success btn-lg px-5">
-
-                        Buy Now
-
-                    </button>
-
-                    <!-- Wishlist -->
-                    <button class="btn btn-outline-danger btn-lg">
-
-                        <i class="bi bi-heart"></i>
-
-                    </button>
-
-                </div>
-
-            </div>
-
         </div>
 
-    </section>
 
-    <!-- Related Products -->
-    <section class="container mb-5">
 
-        <h3 class="fw-bold mb-4">
 
-            Related Products
 
-        </h3>
-
-        <div class="row g-4">
-
-            <!-- Product -->
-            <div class="col-lg-3 col-md-6">
-
-                <div class="card border-0 shadow-sm h-100">
-
-                    <img src="images/headphone.jpg"
-                        class="card-img-top"
-                        height="220"
-                        style="object-fit:cover;">
-
-                    <div class="card-body">
-
-                        <h5>
-                            Headphone
-                        </h5>
-
-                        <p class="text-success fw-bold">
-                            ₹3,999
-                        </p>
-
-                        <button class="btn btn-dark w-100">
-
-                            View Product
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- Product -->
-            <div class="col-lg-3 col-md-6">
-
-                <div class="card border-0 shadow-sm h-100">
-
-                    <img src="images/mouse.jpg"
-                        class="card-img-top"
-                        height="220"
-                        style="object-fit:cover;">
-
-                    <div class="card-body">
-
-                        <h5>
-                            Gaming Mouse
-                        </h5>
-
-                        <p class="text-success fw-bold">
-                            ₹1,499
-                        </p>
-
-                        <button class="btn btn-dark w-100">
-
-                            View Product
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
 
     </section>
-     <footer class="bg-dark text-light pt-5 mt-5 pb-3">
+    <footer class="bg-dark text-light pt-5 mt-5 pb-3">
 
         <div class="container">
 

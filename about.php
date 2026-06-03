@@ -16,6 +16,8 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        
+        <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
 </head>
 
@@ -93,6 +95,34 @@
             </div>
         </div>
     </nav>
+    <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="container barr">
+
+                <div class="">
+                    <ul class="navv p-0 d-flex justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php"><b>Home</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.php"><b>About</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="allproducts.php"><b>Category</b></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php"><b>Cart</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="osummary.php"><b>Checkout</b></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 
     <!-- Hero Section -->
     <section class="bg-dark text-white py-5">

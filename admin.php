@@ -120,6 +120,26 @@
                         </a>
 
                     </li>
+                    <li class="nav-item mb-2">
+
+                        <a href="admin-feedback.php"
+                            class="nav-link text-white">
+
+                            <i class="bi bi-chat-left-text"></i>
+                            feedback
+
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+
+                        <a href="admin-feedback.php"
+                            class="nav-link text-white">
+
+                            <i class="bi bi-bag-check"></i>
+                            Orders
+
+                        </a>
+
 
 
                     <li class="nav-item mb-2">

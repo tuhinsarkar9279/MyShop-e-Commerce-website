@@ -1,3 +1,56 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+
+    header("Location: user-login.php");
+
+    exit();
+}
+
+include 'connect.php';
+
+$user_id = $_SESSION['user_id'];
+
+?>
+<?php
+
+include 'connect.php';
+
+$user_id = $_SESSION['user_id'];
+
+$total_price = 0;
+
+/* Cart Query */
+
+$query = mysqli_query(
+
+    $conn,
+
+    "SELECT
+
+    cart.id AS cart_id,
+
+    cart.quantity,
+
+    products.*
+
+    FROM cart
+
+    JOIN products
+
+    ON cart.product_id = products.id
+
+    WHERE cart.user_id='$user_id'"
+
+);
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +69,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
 </head>
 
@@ -23,78 +77,107 @@
 
 <body class="bg-light">
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
-    <div class="container">
+        <div class="container">
 
-        <div class="container-fluid align-items-center d-flex">
+            <div class="container-fluid align-items-center d-flex">
 
-            <!-- Logo -->
-            <a class="navbar-brand fw-bold" href="index.php">
-                <img style="width: 25%;" src="assets/img/logo.png" alt="logo">
+                <!-- Logo -->
+                <a class="navbar-brand fw-bold" href="index.php">
+                    <img style="width: 25%;" src="assets/img/logo.png" alt="logo">
 
-            </a>
+                </a>
 
-            <!-- Mobile Toggle -->
-            <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
 
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <!-- Navbar Content -->
-            <div class="collapse navbar-collapse justify-content-between"
-                id="navbarSupportedContent">
+                <!-- Navbar Content -->
+                <div class="collapse navbar-collapse justify-content-between"
+                    id="navbarSupportedContent">
 
-                <!-- Search Bar -->
-                <form class="d-flex mx-auto w-50" role="search">
-                    <input class="form-control me-2"
-                        type="search"
-                        placeholder="Search Products..."
-                        aria-label="Search">
+                    <!-- Search Bar -->
+                    <form class="d-flex mx-auto w-50" role="search">
+                        <input class="form-control me-2"
+                            type="search"
+                            placeholder="Search Products..."
+                            aria-label="Search">
 
-                    <button class="btn btn-dark" type="submit">
-                        Search
-                    </button>
-                </form>
+                        <button class="btn btn-dark" type="submit">
+                            Search
+                        </button>
+                    </form>
 
-                <!-- Right Side Icons -->
-                <div class="d-flex align-items-center gap-3">
+                    <!-- Right Side Icons -->
+                    <div class="d-flex align-items-center gap-3">
 
-                    <!-- Wishlist -->
-                    <a href="wishlist.php"
-                        class="text-decoration-none text-dark">
+                        <!-- Wishlist -->
+                        <a href="wishlist.php"
+                            class="text-decoration-none text-dark">
 
-                        <i class="bi bi-heart fs-4"></i>
-                    </a>
+                            <i class="bi bi-heart fs-4"></i>
+                        </a>
 
-                    <!-- Cart -->
-                    <a href="cart.php"
-                        class="text-decoration-none text-dark position-relative">
+                        <!-- Cart -->
+                        <a href="cart.php"
+                            class="text-decoration-none text-dark position-relative">
 
-                        <i class="bi bi-cart3 fs-4"></i>
+                            <i class="bi bi-cart3 fs-4"></i>
 
-                        <!-- Cart Count -->
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
-                    </a>
+                            <!-- Cart Count -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                0
+                            </span>
+                        </a>
 
-                    <!-- Profile -->
-                    <a href="profile.php"
-                        class="text-decoration-none text-dark">
+                        <!-- Profile -->
+                        <a href="profile.php"
+                            class="text-decoration-none text-dark">
 
-                        <i class="bi bi-person-circle fs-4"></i>
-                    </a>
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </a>
+
+                    </div>
 
                 </div>
-
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
+
+    <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="container barr">
+
+                <div class="">
+                    <ul class="navv p-0 d-flex justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.php"><b>Home</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.php"><b>About</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="allproducts.php"><b>Category</b></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="cart.php"><b>Cart</b></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="osummary.php"><b>Checkout</b></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 
     <!-- Cart Section -->
     <section class="container my-5">
@@ -108,155 +191,102 @@
 
 
         </div>
+        <?php
 
-        <div class="row">
+        $total_price = 0;
 
-            <!-- Cart Items -->
-            <div class="col-lg-8">
+        $query = mysqli_query(
 
-                <!-- Cart Item -->
-                <div class="card border-0 shadow-sm mb-4">
+            $conn,
 
-                    <div class="row g-0 align-items-center">
+            "SELECT
+
+    cart.id AS cart_id,
+
+    cart.quantity,
+
+    products.product_name,
+
+    products.product_price,
+
+    products.product_image
+
+    FROM cart
+
+    INNER JOIN products
+
+    ON cart.product_id = products.id
+
+    WHERE cart.user_id='$user_id'"
+
+        );
+
+        while ($row = mysqli_fetch_assoc($query)) {
+
+            $subtotal =
+                $row['product_price']
+                *
+                $row['quantity'];
+
+            $total_price += $subtotal;
+
+        ?>
+
+            <div class="card shadow-sm mb-3">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
 
                         <!-- Product Image -->
                         <div class="col-md-3">
 
-                            <img src="images/laptop.jpg"
-                                class="img-fluid rounded-start"
-                                height="200"
-                                style="object-fit:cover;">
+                            <img src="uploads/<?php echo $row['product_image']; ?>"
+
+                                class="img-fluid rounded"
+
+                                height="120">
 
                         </div>
 
-                        <!-- Product Details -->
-                        <div class="col-md-6">
-
-                            <div class="card-body">
-
-                                <h5 class="card-title">
-                                    Gaming Laptop
-                                </h5>
-
-                                <p class="text-muted">
-                                    Electronics
-                                </p>
-
-                                <h5 class="text-success">
-                                    ₹55,000
-                                </h5>
-
-                                <!-- Quantity -->
-                                <div class="d-flex align-items-center mt-3">
-
-                                    <button class="btn btn-outline-dark btn-sm">
-                                        -
-                                    </button>
-
-                                    <span class="mx-3">
-                                        1
-                                    </span>
-
-                                    <button class="btn btn-outline-dark btn-sm">
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="col-md-3 text-center">
-
-                            <button class="btn btn-danger mb-2">
-
-                                <i class="bi bi-trash"></i>
-                                Remove
-
-                            </button>
-
-                            <br>
-
-                            <button class="btn btn-dark">
-
-                                Buy Now
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Cart Item -->
-                <div class="card border-0 shadow-sm mb-4">
-
-                    <div class="row g-0 align-items-center">
-
+                        <!-- Product Name -->
                         <div class="col-md-3">
 
-                            <img src="images/shoes.jpg"
-                                class="img-fluid rounded-start"
-                                height="200"
-                                style="object-fit:cover;">
+                            <h5>
+
+                                <?php echo $row['product_name']; ?>
+
+                            </h5>
 
                         </div>
 
-                        <div class="col-md-6">
+                        <!-- Price -->
+                        <div class="col-md-2">
 
-                            <div class="card-body">
-
-                                <h5 class="card-title">
-                                    Sports Shoes
-                                </h5>
-
-                                <p class="text-muted">
-                                    Shoes
-                                </p>
-
-                                <h5 class="text-success">
-                                    ₹2,499
-                                </h5>
-
-                                <div class="d-flex align-items-center mt-3">
-
-                                    <button class="btn btn-outline-dark btn-sm">
-                                        -
-                                    </button>
-
-                                    <span class="mx-3">
-                                        1
-                                    </span>
-
-                                    <button class="btn btn-outline-dark btn-sm">
-                                        +
-                                    </button>
-
-                                </div>
-
-                            </div>
+                            ₹<?php echo $row['product_price']; ?>
 
                         </div>
 
-                        <div class="col-md-3 text-center">
+                        <!-- Quantity -->
+                        <div class="col-md-2">
 
-                            <button class="btn btn-danger mb-2">
+                            Qty:
+                            <?php echo $row['quantity']; ?>
 
-                                <i class="bi bi-trash"></i>
+                        </div>
+
+                        <!-- Remove -->
+                        <div class="col-md-2">
+
+                            <a href="remove-cart.php?id=<?php echo $row['cart_id']; ?>"
+
+                                class="btn btn-danger btn-sm"
+
+                                onclick="return confirm('Remove this item?')">
+
                                 Remove
 
-                            </button>
-
-                            <br>
-
-                            <button class="btn btn-dark">
-
-                                Buy Now
-
-                            </button>
+                            </a>
 
                         </div>
 
@@ -266,69 +296,35 @@
 
             </div>
 
-            <!-- Price Summary -->
-            <div class="col-lg-4">
+        <?php } ?>
 
-                <div class="card border-0 shadow-sm">
+        <!-- Total Price -->
 
-                    <div class="card-body">
+        <div class="card shadow-sm mt-4">
 
-                        <h4 class="fw-bold mb-4">
-                            Price Details
-                        </h4>
+            <div class="card-body">
 
-                        <div class="d-flex justify-content-between mb-3">
+                <h4>
 
-                            <span>
-                                Price (2 Items)
-                            </span>
+                    Total Amount:
 
-                            <span>
-                                ₹57,499
-                            </span>
+                    <span class="text-success">
 
-                        </div>
+                        ₹<?php echo $total_price; ?>
 
-                        <div class="d-flex justify-content-between mb-3">
+                    </span>
 
-                            <span>
-                                Delivery Charges
-                            </span>
+                </h4>
 
-                            <span class="text-success">
-                                FREE
-                            </span>
-
-                        </div>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between fw-bold fs-5">
-
-                            <span>
-                                Total Amount
-                            </span>
-
-                            <span class="text-success">
-                                ₹57,499
-                            </span>
-
-                        </div>
-
-                        <!-- Checkout -->
-                        <button class="btn btn-dark w-100 mt-4 py-3">
-
-                            Proceed to Checkout
-
-                        </button>
-
-                    </div>
-
-                </div>
+                <a href="checkout.php"
+                    class="btn btn-dark">
+                    Proceed To Checkout
+                </a>
 
             </div>
 
         </div>
+
 
     </section>
     <footer class="bg-dark text-light pt-5 mt-5 pb-3">

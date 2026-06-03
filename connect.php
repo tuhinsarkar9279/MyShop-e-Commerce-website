@@ -1,26 +1,21 @@
 <?php
 
-$servername = "localhost";
-$username   = "root";
-$password   = "";
-$database   = "myshop";
+$servername = "127.0.0.1";
+$username = "root";
+$password = "";
+$database = "myshop";
 
-/* Create Connection */
-$conn = mysqli_connect(
+$conn = @mysqli_connect(
     $servername,
     $username,
     $password,
     $database
 );
 
-/* Check Connection */
-if(!$conn){
-
-    die("Connection Failed : "
-    . mysqli_connect_error());
-
+if (!$conn) {
+    die("MySQL Error: " . mysqli_connect_error());
 }
 
-//echo "Database Connected";
+//echo "Connected Successfully";
 
 ?>

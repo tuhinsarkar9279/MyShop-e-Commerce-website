@@ -127,7 +127,7 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-products.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white bg-primary">
 
                             <i class="bi bi-box-seam"></i>
                             Products
@@ -192,6 +192,16 @@ if (isset($_GET['delete'])) {
                             Banner
                         </a>
 
+                    </li>
+                                        <li class="nav-item mb-2">
+
+                        <a href="admin-feedback.php"
+                            class="nav-link text-white">
+
+                            <i class="bi bi-chat-left-text"></i>
+                            feedback
+
+                        </a>
                     </li>
 
 
