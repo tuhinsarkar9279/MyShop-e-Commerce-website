@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 include 'connect.php';
 
 /* Fetch Banner Images */
@@ -80,25 +82,25 @@ if(isset($_SESSION['user_id'])){
 
                     <!-- Search Bar -->
                     <form class="d-flex mx-auto position-relative"
-                    method="GET"
-                    action="search.php">
+                        method="GET"
+                        action="search.php">
 
-                    <input
-                        class="form-control pe-5"
-                        type="search"
-                        name="search"
-                        placeholder="Search Products..."
-                        required>
+                        <input
+                            class="form-control pe-5"
+                            type="search"
+                            name="search"
+                            placeholder="Search Products..."
+                            required>
 
-                    <button
-                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
-                        type="submit">
+                        <button
+                            class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                            type="submit">
 
-                        <i class="bi bi-search fs-5"></i>
+                            <i class="bi bi-search fs-5"></i>
 
-                    </button>
+                        </button>
 
-                </form>
+                    </form>
 
                     <!-- Right Side Icons -->
                     <div class="d-flex align-items-center gap-3">
@@ -117,6 +119,11 @@ if(isset($_SESSION['user_id'])){
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                                <?php echo $cart_count; ?>
+
+                            </span>
 
                         </a>
 
@@ -375,30 +382,30 @@ if(isset($_SESSION['user_id'])){
                                 <!-- Add To Cart -->
                                 <form action="add-cart.php" method="GET">
 
-                                        <input
-                                            type="hidden"
-                                            name="id"
-                                            value="<?php echo $row['id']; ?>">
+                                    <input
+                                        type="hidden"
+                                        name="id"
+                                        value="<?php echo $row['id']; ?>">
 
-                                        <button
-                                            type="submit"
-                                            class="btn btn-dark">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-dark">
 
-                                            Add to Cart
+                                        Add to Cart
 
-                                        </button>
+                                    </button>
 
-                                    </form>
+                                </form>
 
                                 <!-- Wishlist -->
-                                 <a href="add-wishlist.php?id=<?php echo $row['id']; ?>"
+                                <a href="add-wishlist.php?id=<?php echo $row['id']; ?>"
 
-                                        class="btn btn-outline-danger">
+                                    class="btn btn-outline-danger">
 
-                                        <ion-icon class="fs-5 mt-1"
-                                            name="heart-outline"></ion-icon>
+                                    <ion-icon class="fs-5 mt-1"
+                                        name="heart-outline"></ion-icon>
 
-                                    </a>
+                                </a>
 
                             </div>
 

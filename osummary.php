@@ -141,6 +141,32 @@ if (isset($_POST['save_address'])) {
 </head>
 
 <body class="bg-light">
+    <?php
+
+    $cart_count = 0;
+
+    if (isset($_SESSION['user_id'])) {
+
+        $user_id = $_SESSION['user_id'];
+
+        $cart_query = mysqli_query(
+
+            $conn,
+
+            "SELECT COALESCE(SUM(quantity),0) AS total
+
+        FROM cart
+
+        WHERE user_id='$user_id'"
+
+        );
+
+        $cart_data = mysqli_fetch_assoc($cart_query);
+
+        $cart_count = $cart_data['total'];
+    }
+
+    ?>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
 
         <div class="container">
@@ -197,6 +223,11 @@ if (isset($_POST['save_address'])) {
                         <i class="bi bi-cart3 fs-4"></i>
 
                         <!-- Cart Count -->
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                            <?php echo $cart_count; ?>
+
+                        </span>
 
                     </a>
 
