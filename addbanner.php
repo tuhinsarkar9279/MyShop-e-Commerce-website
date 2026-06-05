@@ -1,82 +1,84 @@
 <?php
 
+include 'admin-session.php';
+
 include 'connect.php';
 
+
 /* Add Banner */
-if(isset($_POST['add_banner'])){
+if (isset($_POST['add_banner'])) {
 
     $image =
-    $_FILES['banner_image']['name'];
+        $_FILES['banner_image']['name'];
 
     $tmp_name =
-    $_FILES['banner_image']['tmp_name'];
+        $_FILES['banner_image']['tmp_name'];
 
     move_uploaded_file(
         $tmp_name,
-        "uploads/".$image
+        "uploads/" . $image
     );
 
-    mysqli_query($conn,
+    mysqli_query(
+        $conn,
 
-    "INSERT INTO banners(image)
+        "INSERT INTO banners(image)
 
     VALUES('$image')"
 
     );
-
 }
 
 /* Delete Banner */
-if(isset($_GET['delete'])){
+if (isset($_GET['delete'])) {
 
     $id = $_GET['delete'];
 
     /* Fetch Image */
     $fetch =
-    mysqli_query($conn,
-
-    "SELECT * FROM banners
-    WHERE id='$id'"
-
-    );
-
-    $data =
-    mysqli_fetch_assoc($fetch);
-
-    /* Delete Banner */
-if(isset($_GET['delete'])){
-
-    $id = $_GET['delete'];
-
-    /* Fetch Banner */
-    $fetch = mysqli_query(
-        $conn,
-        "SELECT * FROM banners WHERE id='$id'"
-    );
-
-    /* Check Banner Exists */
-    if(mysqli_num_rows($fetch) > 0){
-
-        $data = mysqli_fetch_assoc($fetch);
-
-        /* Delete Image File */
-        if(!empty($data['image']) &&
-            file_exists("uploads/".$data['image'])){
-
-            unlink("uploads/".$data['image']);
-
-        }
-
-        /* Delete From Database */
         mysqli_query(
             $conn,
-            "DELETE FROM banners WHERE id='$id'"
+
+            "SELECT * FROM banners
+    WHERE id='$id'"
+
         );
 
+    $data =
+        mysqli_fetch_assoc($fetch);
+
+    /* Delete Banner */
+    if (isset($_GET['delete'])) {
+
+        $id = $_GET['delete'];
+
+        /* Fetch Banner */
+        $fetch = mysqli_query(
+            $conn,
+            "SELECT * FROM banners WHERE id='$id'"
+        );
+
+        /* Check Banner Exists */
+        if (mysqli_num_rows($fetch) > 0) {
+
+            $data = mysqli_fetch_assoc($fetch);
+
+            /* Delete Image File */
+            if (
+                !empty($data['image']) &&
+                file_exists("uploads/" . $data['image'])
+            ) {
+
+                unlink("uploads/" . $data['image']);
+            }
+
+            /* Delete From Database */
+            mysqli_query(
+                $conn,
+                "DELETE FROM banners WHERE id='$id'"
+            );
+        }
     }
-
-}
-
 }
 
 ?>
@@ -123,7 +125,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin.php"
                             class="nav-link text-white active">
 
                             <i class="bi bi-speedometer2"></i>
@@ -159,7 +161,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-user.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-people"></i>
@@ -171,7 +173,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-sellers.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-shop"></i>
@@ -183,7 +185,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-truck"></i>
@@ -202,7 +204,7 @@ if(isset($_GET['delete'])){
                         </a>
 
                     </li>
-                                        <li class="nav-item mb-2">
+                    <li class="nav-item mb-2">
 
                         <a href="admin-feedback.php"
                             class="nav-link text-white">
@@ -216,7 +218,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="orders.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-bag-check"></i>
@@ -228,7 +230,7 @@ if(isset($_GET['delete'])){
 
                     <li class="nav-item mt-4">
 
-                        <a href="#"
+                        <a href="admin-logout.php"
                             class="btn btn-danger w-100">
 
                             Logout
@@ -254,14 +256,38 @@ if(isset($_GET['delete'])){
                     <div class="d-flex align-items-center">
 
                         <span class="me-3 fw-semibold">
-                            Welcome Admin
+
+                            Welcome,
+
+                            <?php echo $_SESSION['admin_name']; ?>
+
                         </span>
 
-                        <img src="images/admin.jpg"
-                            class="rounded-circle"
-                            width="45"
-                            height="45"
-                            style="object-fit:cover;">
+                        <?php if (!empty($_SESSION['admin_image'])) { ?>
+
+                            <img src="uploads/<?php echo $_SESSION['admin_image']; ?>"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } else { ?>
+
+                            <img src="images/admin.jpg"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } ?>
 
                     </div>
 

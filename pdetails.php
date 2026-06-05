@@ -92,9 +92,6 @@ $user_id = $_SESSION['user_id'];
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
                         </a>
 
                         <!-- Profile -->

@@ -1,6 +1,7 @@
 <?php
 
 include 'connect.php';
+include 'admin-session.php';
 
 /* Approve Product */
 
@@ -114,7 +115,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin.php"
                             class="nav-link text-white active">
 
                             <i class="bi bi-speedometer2"></i>
@@ -150,7 +151,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-user.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-people"></i>
@@ -162,7 +163,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-sellers.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-shop"></i>
@@ -174,7 +175,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-truck"></i>
@@ -193,7 +194,7 @@ if (isset($_GET['delete'])) {
                         </a>
 
                     </li>
-                                        <li class="nav-item mb-2">
+                    <li class="nav-item mb-2">
 
                         <a href="admin-feedback.php"
                             class="nav-link text-white">
@@ -207,7 +208,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="orders.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-bag-check"></i>
@@ -219,7 +220,7 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mt-4">
 
-                        <a href="#"
+                        <a href="admin-logout.php"
                             class="btn btn-danger w-100">
 
                             Logout
@@ -245,14 +246,38 @@ if (isset($_GET['delete'])) {
                     <div class="d-flex align-items-center">
 
                         <span class="me-3 fw-semibold">
-                            Welcome Admin
+
+                            Welcome,
+
+                            <?php echo $_SESSION['admin_name']; ?>
+
                         </span>
 
-                        <img src="images/admin.jpg"
-                            class="rounded-circle"
-                            width="45"
-                            height="45"
-                            style="object-fit:cover;">
+                        <?php if (!empty($_SESSION['admin_image'])) { ?>
+
+                            <img src="uploads/<?php echo $_SESSION['admin_image']; ?>"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } else { ?>
+
+                            <img src="images/admin.jpg"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } ?>
 
                     </div>
 
@@ -261,133 +286,12 @@ if (isset($_GET['delete'])) {
                 <!-- Dashboard Cards -->
                 <div class="container py-4">
 
-                    <div class="row g-4">
 
-                        <!-- Total Products -->
-                        <div class="col-lg-3 col-md-6">
+                <h2 class="fw-bold mb-4">
+                    Product Management
+                </h2>
 
-                            <div class="card border-0 shadow-sm">
 
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Products
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                150
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-box-seam fs-1 text-primary"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Orders -->
-                        <div class="col-lg-3 col-md-6">
-
-                            <div class="card border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Orders
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                320
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-bag-check fs-1 text-success"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Users -->
-                        <div class="col-lg-3 col-md-6">
-
-                            <div class="card border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Users
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                540
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-people fs-1 text-warning"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Revenue -->
-                        <div class="col-lg-3 col-md-6">
-
-                            <div class="card border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Revenue
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                ₹2L
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-currency-rupee fs-1 text-danger"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
 
                     <!-- Recent Orders -->
                     <div class="table-responsive">

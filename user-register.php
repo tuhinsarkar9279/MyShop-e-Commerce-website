@@ -2,24 +2,50 @@
 
 include 'connect.php';
 
-if (isset($_POST['register'])) {
+if(isset($_POST['register'])){
 
     $name = $_POST['name'];
+
     $email = $_POST['email'];
+
     $password = md5($_POST['password']);
 
+    $image = "";
+
+    if(
+        isset($_FILES['image']) &&
+        $_FILES['image']['error'] == 0
+    ){
+
+        $image = time() . "_" . $_FILES['image']['name'];
+
+        move_uploaded_file(
+
+            $_FILES['image']['tmp_name'],
+
+            "uploads/" . $image
+
+        );
+
+    }
+
     $check = mysqli_query(
+
         $conn,
+
         "SELECT * FROM users
+
         WHERE email='$email'"
+
     );
 
-    if (mysqli_num_rows($check) > 0) {
+    if(mysqli_num_rows($check) > 0){
 
         $msg = "Email Already Exists";
-    } else {
 
-        mysqli_query(
+    }else{
+
+        $result = mysqli_query(
 
             $conn,
 
@@ -28,7 +54,8 @@ if (isset($_POST['register'])) {
             name,
             email,
             password,
-            role
+            role,
+            image
 
             )
 
@@ -37,18 +64,28 @@ if (isset($_POST['register'])) {
             '$name',
             '$email',
             '$password',
-            'buyer'
+            'buyer',
+            '$image'
 
             )"
 
         );
 
-        header("Location: user-login.php");
-        exit();
-    }
-}
-?>
+        if(!$result){
 
+            die(mysqli_error($conn));
+
+        }
+
+        header("Location: user-login.php");
+
+        exit();
+
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -79,7 +116,7 @@ if (isset($_POST['register'])) {
 
                         </h3>
 
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
 
                             <input type="text"
                                 name="name"
@@ -99,9 +136,13 @@ if (isset($_POST['register'])) {
                                 placeholder="Password"
                                 required>
 
+                            <input type="file"
+                                name="image"
+                                class="form-control mb-3">
+
                             <button type="submit"
                                 name="register"
-                                class="btn btn-dark w-100">
+                                class="btn btn-dark w-100 ">
 
                                 Register
 

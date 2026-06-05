@@ -1,3 +1,14 @@
+<?php
+
+include 'seller-session.php';
+
+include 'connect.php';
+
+?>
+
+
+<!DOCTYPE html>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,8 +52,8 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
-                            class="nav-link text-white active">
+                        <a href="sadmin.php"
+                            class="nav-link text-white active bg-primary">
 
                             <i class="bi bi-speedometer2"></i>
                             Dashboard
@@ -65,7 +76,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="seller-manage-product.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-box-seam"></i>
@@ -77,7 +88,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="seller-orders.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-bag-check"></i>
@@ -89,7 +100,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="seller-order-items.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-graph-up-arrow"></i>
@@ -99,16 +110,17 @@
 
                     </li>
 
-                    <li class="nav-item mt-4">
+                    <a href="seller-logout.php"
 
-                        <a href="#"
-                            class="btn btn-danger w-100">
+                        class="btn btn-danger"
 
-                            Logout
+                        onclick="return confirm('Are you sure you want to logout?')">
 
-                        </a>
+                        <i class="bi bi-box-arrow-right"></i>
 
-                    </li>
+                        Logout
+
+                    </a>
 
                 </ul>
 
@@ -127,14 +139,38 @@
                     <div class="d-flex align-items-center">
 
                         <span class="me-3 fw-semibold">
-                            Welcome Seller
+
+                            Welcome,
+
+                            <?php echo $seller_name; ?>
+
                         </span>
 
-                        <img src="images/seller.jpg"
-                            class="rounded-circle"
-                            width="45"
-                            height="45"
-                            style="object-fit:cover;">
+                        <?php if (!empty($seller_image)) { ?>
+
+                            <img src="uploads/<?php echo $seller_image; ?>"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } else { ?>
+
+                            <img src="images/user.jpg"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } ?>
 
                     </div>
 
@@ -144,6 +180,75 @@
                 <div class="container py-4">
 
                     <!-- Cards -->
+                    <?php
+
+                    $seller_id = $_SESSION['seller_id'];
+
+                    /* Total Products */
+
+                    $product_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total_products
+
+    FROM products
+
+    WHERE seller_id='$seller_id'"
+
+                    );
+
+                    $product_data = mysqli_fetch_assoc($product_query);
+
+                    /* Total Orders */
+
+                    $order_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total_orders
+
+    FROM orders
+
+    INNER JOIN products
+
+    ON orders.product_id = products.id
+
+    WHERE products.seller_id='$seller_id'"
+
+                    );
+
+                    $order_data = mysqli_fetch_assoc($order_query);
+
+                    /* Revenue (Delivered Orders Only) */
+
+                    $revenue_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT
+
+    SUM(products.product_price * orders.quantity)
+
+    AS total_revenue
+
+    FROM orders
+
+    INNER JOIN products
+
+    ON orders.product_id = products.id
+
+    WHERE products.seller_id='$seller_id'
+
+    AND orders.delivery_status='Delivered'"
+
+                    );
+
+                    $revenue_data = mysqli_fetch_assoc($revenue_query);
+
+                    $total_revenue = $revenue_data['total_revenue'] ?? 0;
+
+                    ?>
                     <div class="row g-4">
 
                         <!-- Total Products -->
@@ -162,7 +267,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                45
+                                                <?php echo $product_data['total_products']; ?>
                                             </h2>
 
                                         </div>
@@ -177,7 +282,7 @@
 
                         </div>
 
-                        <!-- Orders -->
+                        <!-- Total Orders -->
                         <div class="col-lg-4 col-md-6">
 
                             <div class="card border-0 shadow-sm">
@@ -193,7 +298,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                120
+                                                <?php echo $order_data['total_orders']; ?>
                                             </h2>
 
                                         </div>
@@ -224,7 +329,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                ₹1,20,000
+                                                ₹<?php echo number_format($total_revenue); ?>
                                             </h2>
 
                                         </div>

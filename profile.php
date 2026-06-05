@@ -1,3 +1,112 @@
+<?php
+
+session_start();
+
+include 'connect.php';
+
+if (!isset($_SESSION['user_id'])) {
+
+    header("Location:user-login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+?>
+<?php
+
+
+
+include 'connect.php';
+
+$user_id = $_SESSION['user_id'];
+
+/* Update Profile */
+
+if (isset($_POST['save_profile'])) {
+
+    $name = $_POST['name'];
+
+    $email = $_POST['email'];
+
+    $password = $_POST['password'];
+
+    if (!empty($password)) {
+
+        mysqli_query(
+
+            $conn,
+
+            "UPDATE users
+
+            SET
+
+            name='$name',
+            email='$email',
+            password='$password'
+
+            WHERE id='$user_id'"
+
+        );
+    } else {
+
+        mysqli_query(
+
+            $conn,
+
+            "UPDATE users
+
+            SET
+
+            name='$name',
+            email='$email'
+
+            WHERE id='$user_id'"
+
+        );
+    }
+
+    header("Location: profile.php");
+
+    exit();
+}
+
+/* Get User Data */
+
+$user_query = mysqli_query(
+
+    $conn,
+
+    "SELECT *
+
+    FROM users
+
+    WHERE id='$user_id'"
+
+);
+
+$user = mysqli_fetch_assoc($user_query);
+
+?>
+<?php
+
+$user_id = $_SESSION['user_id'];
+
+$user_query = mysqli_query(
+
+    $conn,
+
+    "SELECT *
+
+    FROM users
+
+    WHERE id='$user_id'"
+
+);
+
+$user = mysqli_fetch_assoc($user_query);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,15 +158,25 @@
                     id="navbarSupportedContent">
 
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto w-50" role="search">
-                        <input class="form-control me-2"
-                            type="search"
-                            placeholder="Search Products..."
-                            aria-label="Search">
+                    <form class="d-flex mx-auto position-relative"
+                        method="GET"
+                        action="search.php">
 
-                        <button class="btn btn-dark" type="submit">
-                            Search
+                        <input
+                            class="form-control pe-5"
+                            type="search"
+                            name="search"
+                            placeholder="Search Products..."
+                            required>
+
+                        <button
+                            class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                            type="submit">
+
+                            <i class="bi bi-search fs-5"></i>
+
                         </button>
+
                     </form>
 
                     <!-- Right Side Icons -->
@@ -77,9 +196,7 @@
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
+
                         </a>
 
                         <!-- Profile -->
@@ -138,44 +255,88 @@
                     <div class="card-body text-center">
 
                         <!-- Profile Image -->
-                        <img src="images/user.jpg"
-                            class="rounded-circle mb-3"
-                            width="120"
-                            height="120"
-                            style="object-fit:cover;">
+
+                        <?php
+
+                        if (!empty($user['image'])) {
+
+                        ?>
+
+                            <img src="uploads/<?php echo $user['image']; ?>"
+
+                                class="rounded-circle mb-3"
+
+                                width="120"
+
+                                height="120"
+
+                                style="object-fit:cover;">
+
+                        <?php
+
+                        } else {
+
+                        ?>
+
+                            <img src="images/user.jpg"
+
+                                class="rounded-circle mb-3"
+
+                                width="120"
+
+                                height="120"
+
+                                style="object-fit:cover;">
+
+                        <?php } ?>
 
                         <!-- User Name -->
+
                         <h3 class="fw-bold">
-                            Tuhin Sarkar
+
+                            <?php echo $user['name']; ?>
+
                         </h3>
 
+                        <!-- Email -->
+
                         <p class="text-muted">
-                            tuhin@example.com
+
+                            <?php echo $user['email']; ?>
+
                         </p>
 
                         <!-- Buttons -->
+
                         <div class="d-grid gap-2 mt-4">
 
-                            <button class="btn btn-dark">
+                            <a href="edit-profile.php"
+
+                                class="btn btn-dark">
 
                                 <i class="bi bi-pencil-square"></i>
+
                                 Edit Profile
 
-                            </button>
+                            </a>
 
-                            <button class="btn btn-outline-danger">
+                            <a href="logout.php"
+
+                                class="btn btn-outline-danger"
+
+                                onclick="return confirm('Are you sure you want to logout?')">
 
                                 <i class="bi bi-box-arrow-right"></i>
+
                                 Logout
 
-                            </button>
+                            </a>
 
                         </div>
 
                     </div>
 
                 </div>
-
             </div>
 
             <!-- Right Content -->
@@ -242,112 +403,181 @@
                     <div class="tab-pane fade show active"
                         id="orders">
 
-                        <!-- Order Card -->
-                        <div class="card border-0 shadow-sm mb-4">
+                        <?php
 
-                            <div class="row g-0 align-items-center">
+                        $query = mysqli_query(
 
-                                <!-- Image -->
-                                <div class="col-md-3">
+                            $conn,
 
-                                    <img src="images/laptop.jpg"
-                                        class="img-fluid rounded-start"
-                                        height="200"
-                                        style="object-fit:cover;">
+                            "SELECT
 
-                                </div>
+        orders.*,
 
-                                <!-- Details -->
-                                <div class="col-md-6">
+        products.product_name,
 
-                                    <div class="card-body">
+        products.product_price,
 
-                                        <h5 class="card-title">
-                                            Gaming Laptop
-                                        </h5>
+        products.product_image
 
-                                        <p class="text-muted">
-                                            Ordered on 25 May 2026
-                                        </p>
+        FROM orders
 
-                                        <h5 class="text-success">
-                                            ₹55,000
-                                        </h5>
+        INNER JOIN products
 
-                                        <span class="badge bg-success">
-                                            Delivered
-                                        </span>
+        ON orders.product_id = products.id
+
+        WHERE orders.user_id='$user_id'
+
+        ORDER BY orders.id DESC"
+
+                        );
+
+                        if (mysqli_num_rows($query) > 0) {
+
+                            while ($row = mysqli_fetch_assoc($query)) {
+
+                        ?>
+
+                                <div class="card border-0 shadow-sm mb-4">
+
+                                    <div class="row g-0 align-items-center">
+
+                                        <!-- Product Image -->
+
+                                        <div class="col-md-3">
+
+                                            <img src="uploads/<?php echo $row['product_image']; ?>"
+
+                                                class="img-fluid rounded-start"
+
+                                                height="200"
+
+                                                style="object-fit:cover;">
+
+                                        </div>
+
+                                        <!-- Product Details -->
+
+                                        <div class="col-md-6">
+
+                                            <div class="card-body">
+
+                                                <h5 class="card-title">
+
+                                                    <?php echo $row['product_name']; ?>
+
+                                                </h5>
+
+                                                <p class="text-muted">
+
+                                                    Ordered on
+
+                                                    <?php echo date("d M Y", strtotime($row['order_date'])); ?>
+
+                                                </p>
+
+                                                <p>
+
+                                                    Quantity :
+
+                                                    <?php echo $row['quantity']; ?>
+
+                                                </p>
+
+                                                <h5 class="text-success">
+
+                                                    ₹<?php echo $row['product_price']; ?>
+
+                                                </h5>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Status & Action -->
+
+                                        <div class="col-md-3 text-center">
+
+                                            <?php
+
+                                            if ($row['delivery_status'] == "Delivered") {
+
+                                                echo "<span class='badge bg-success fs-6'>
+        Delivered
+        </span>";
+
+                                                echo "<br><br>";
+
+                                            ?>
+
+                                                <a href="add-cart.php?id=<?php echo $row['product_id']; ?>"
+
+                                                    class="btn btn-dark">
+
+                                                    Buy Again
+
+                                                </a>
+
+                                            <?php
+
+                                            } elseif ($row['delivery_status'] == "Cancelled") {
+
+                                                echo "<span class='badge bg-danger fs-6'>
+        Cancelled
+        </span>";
+
+                                                echo "<br><small class='text-danger fw-bold mt-2 d-block'>";
+
+                                                echo $row['cancel_reason'];
+
+                                                echo "</small>";
+
+                                                if (!empty($row['cancel_note'])) {
+
+                                                    echo "<small class='text-muted d-block'>";
+
+                                                    echo $row['cancel_note'];
+
+                                                    echo "</small>";
+                                                }
+                                            } elseif ($row['delivery_status'] == "Out For Delivery") {
+
+                                                echo "<span class='badge bg-primary fs-6'>
+        Out For Delivery
+        </span>";
+                                            } elseif ($row['seller_status'] == "Approved") {
+
+                                                echo "<span class='badge bg-info fs-6'>
+        Shipped
+        </span>";
+                                            } else {
+
+                                                echo "<span class='badge bg-secondary fs-6'>
+        Pending
+        </span>";
+                                            }
+
+                                            ?>
+
+                                        </div>
 
                                     </div>
 
                                 </div>
 
-                                <!-- Action -->
-                                <div class="col-md-3 text-center">
+                            <?php
 
-                                    <button class="btn btn-dark">
+                            }
+                        } else {
 
-                                        Buy Again
+                            ?>
 
-                                    </button>
+                            <div class="alert alert-info text-center">
 
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Order Card -->
-                        <div class="card border-0 shadow-sm">
-
-                            <div class="row g-0 align-items-center">
-
-                                <div class="col-md-3">
-
-                                    <img src="images/shoes.jpg"
-                                        class="img-fluid rounded-start"
-                                        height="200"
-                                        style="object-fit:cover;">
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="card-body">
-
-                                        <h5 class="card-title">
-                                            Sports Shoes
-                                        </h5>
-
-                                        <p class="text-muted">
-                                            Ordered on 10 May 2026
-                                        </p>
-
-                                        <h5 class="text-success">
-                                            ₹2,499
-                                        </h5>
-
-                                        <span class="badge bg-warning text-dark">
-                                            Shipping
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-3 text-center">
-
-                                    <button class="btn btn-dark">
-
-                                        Track Order
-
-                                    </button>
-
-                                </div>
+                                No Orders Found
 
                             </div>
 
-                        </div>
+                        <?php } ?>
 
                     </div>
 
@@ -355,25 +585,133 @@
                     <div class="tab-pane fade"
                         id="wishlist">
 
-                        <div class="card border-0 shadow-sm">
+                        <?php
 
-                            <div class="card-body text-center py-5">
+                        $wishlist_query = mysqli_query(
 
-                                <i class="bi bi-heart fs-1 text-danger"></i>
+                            $conn,
 
-                                <h4 class="mt-3">
-                                    Wishlist Items
-                                </h4>
+                            "SELECT
 
-                                <p class="text-muted">
+    wishlist.id AS wishlist_id,
 
-                                    Your wishlist products will appear here.
+    products.*
 
-                                </p>
+    FROM wishlist
+
+    INNER JOIN products
+
+    ON wishlist.product_id = products.id
+
+    WHERE wishlist.user_id='$user_id'
+
+    ORDER BY wishlist.id DESC"
+
+                        );
+
+                        if (mysqli_num_rows($wishlist_query) > 0) {
+
+                        ?>
+
+                            <div class="row">
+
+                                <?php
+
+                                while ($row = mysqli_fetch_assoc($wishlist_query)) {
+
+                                ?>
+
+                                    <div class="col-md-4 mb-4">
+
+                                        <div class="card border-0 shadow-sm h-100">
+
+                                            <!-- Product Image -->
+
+                                            <img src="uploads/<?php echo $row['product_image']; ?>"
+
+                                                class="card-img-top"
+
+                                                height="250"
+
+                                                style="object-fit:cover;">
+
+                                            <div class="card-body text-center">
+
+                                                <h5>
+
+                                                    <?php echo $row['product_name']; ?>
+
+                                                </h5>
+
+                                                <h6 class="text-success">
+
+                                                    ₹<?php echo $row['product_price']; ?>
+
+                                                </h6>
+
+                                                <div class="mt-3">
+
+                                                    <!-- Add To Cart -->
+
+                                                    <a href="add-cart.php?id=<?php echo $row['id']; ?>"
+
+                                                        class="btn btn-dark">
+
+                                                        <i class="bi bi-cart-plus"></i>
+
+                                                        Add To Cart
+
+                                                    </a>
+
+                                                    <!-- Remove Wishlist -->
+
+                                                    <a href="remove-wishlist.php?id=<?php echo $row['wishlist_id']; ?>"
+
+                                                        class="btn btn-danger"
+
+                                                        onclick="return confirm('Remove from wishlist?')">
+
+                                                        <i class="bi bi-trash"></i>
+
+                                                    </a>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                <?php } ?>
 
                             </div>
 
-                        </div>
+                        <?php } else { ?>
+
+                            <div class="card border-0 shadow-sm">
+
+                                <div class="card-body text-center py-5">
+
+                                    <i class="bi bi-heart fs-1 text-danger"></i>
+
+                                    <h4 class="mt-3">
+
+                                        Wishlist Items
+
+                                    </h4>
+
+                                    <p class="text-muted">
+
+                                        No products in your wishlist.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <?php } ?>
 
                     </div>
 
@@ -386,49 +724,78 @@
                             <div class="card-body">
 
                                 <h4 class="fw-bold mb-4">
+
                                     Account Settings
+
                                 </h4>
 
-                                <!-- Form -->
-                                <form>
+                                <form method="POST">
 
                                     <div class="mb-3">
 
                                         <label class="form-label">
+
                                             Full Name
+
                                         </label>
 
                                         <input type="text"
+
+                                            name="name"
+
                                             class="form-control"
-                                            value="Tuhin Sarkar">
+
+                                            value="<?php echo $user['name']; ?>"
+
+                                            required>
 
                                     </div>
 
                                     <div class="mb-3">
 
                                         <label class="form-label">
+
                                             Email Address
+
                                         </label>
 
                                         <input type="email"
+
+                                            name="email"
+
                                             class="form-control"
-                                            value="tuhin@example.com">
+
+                                            value="<?php echo $user['email']; ?>"
+
+                                            required>
 
                                     </div>
 
                                     <div class="mb-3">
 
                                         <label class="form-label">
-                                            Password
+
+                                            New Password
+
                                         </label>
 
                                         <input type="password"
+
+                                            name="password"
+
                                             class="form-control"
-                                            placeholder="Enter new password">
+
+                                            placeholder="Leave blank to keep current password">
 
                                     </div>
 
-                                    <button class="btn btn-dark">
+                                    <button
+
+                                        type="submit"
+
+                                        name="save_profile"
+
+                                        class="btn btn-dark">
 
                                         Save Changes
 

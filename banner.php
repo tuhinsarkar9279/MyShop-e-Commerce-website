@@ -17,13 +17,9 @@ if(isset($_POST['add_banner'])){
     );
 
     mysqli_query($conn,
-
     "INSERT INTO banners(image)
-
     VALUES('$image')"
-
     );
-
 }
 
 /* Delete Banner */

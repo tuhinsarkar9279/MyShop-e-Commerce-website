@@ -4,11 +4,10 @@ session_start();
 
 include 'connect.php';
 
-/* Check Login */
-
 if(!isset($_SESSION['user_id'])){
 
     header("Location: user-login.php");
+
     exit();
 
 }
@@ -23,7 +22,9 @@ $check = mysqli_query(
 
     $conn,
 
-    "SELECT * FROM cart
+    "SELECT *
+
+    FROM cart
 
     WHERE user_id='$user_id'
 
@@ -73,9 +74,13 @@ if(mysqli_num_rows($check) > 0){
 
 }
 
-/* Redirect */
+/* Go Back */
 
-header("Location: " . $_SERVER['HTTP_REFERER']);
+echo "<script>
+
+window.history.back();
+
+</script>";
 
 exit();
 

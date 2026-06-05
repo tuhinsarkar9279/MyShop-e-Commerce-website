@@ -14,39 +14,7 @@ include 'connect.php';
 $user_id = $_SESSION['user_id'];
 
 ?>
-<?php
 
-include 'connect.php';
-
-$user_id = $_SESSION['user_id'];
-
-$total_price = 0;
-
-/* Cart Query */
-
-$query = mysqli_query(
-
-    $conn,
-
-    "SELECT
-
-    cart.id AS cart_id,
-
-    cart.quantity,
-
-    products.*
-
-    FROM cart
-
-    JOIN products
-
-    ON cart.product_id = products.id
-
-    WHERE cart.user_id='$user_id'"
-
-);
-
-?>
 
 
 
@@ -131,9 +99,7 @@ $query = mysqli_query(
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
+
                         </a>
 
                         <!-- Profile -->

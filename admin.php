@@ -1,3 +1,10 @@
+<?php
+
+include 'admin-session.php';
+
+include 'connect.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,8 +48,8 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
-                            class="nav-link text-white active">
+                        <a href="admin.php"
+                            class="nav-link text-white active bg-primary">
 
                             <i class="bi bi-speedometer2"></i>
                             Dashboard
@@ -77,7 +84,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-user.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-people"></i>
@@ -89,7 +96,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="admin-sellers.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-shop"></i>
@@ -101,7 +108,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-truck"></i>
@@ -130,21 +137,13 @@
 
                         </a>
                     </li>
-                    <li class="nav-item mb-2">
 
-                        <a href="admin-feedback.php"
-                            class="nav-link text-white">
-
-                            <i class="bi bi-bag-check"></i>
-                            Orders
-
-                        </a>
 
 
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="orders.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-bag-check"></i>
@@ -156,7 +155,7 @@
 
                     <li class="nav-item mt-4">
 
-                        <a href="#"
+                        <a href="admin-logout.php"
                             class="btn btn-danger w-100">
 
                             Logout
@@ -182,21 +181,123 @@
                     <div class="d-flex align-items-center">
 
                         <span class="me-3 fw-semibold">
-                            Welcome Admin
+
+                            Welcome,
+
+                            <?php echo $_SESSION['admin_name']; ?>
+
                         </span>
 
-                        <img src="images/admin.jpg"
-                            class="rounded-circle"
-                            width="45"
-                            height="45"
-                            style="object-fit:cover;">
+                        <?php if (!empty($_SESSION['admin_image'])) { ?>
+
+                            <img src="uploads/<?php echo $_SESSION['admin_image']; ?>"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } else { ?>
+
+                            <img src="images/admin.jpg"
+
+                                class="rounded-circle"
+
+                                width="45"
+
+                                height="45"
+
+                                style="object-fit:cover;">
+
+                        <?php } ?>
 
                     </div>
-
                 </nav>
 
                 <!-- Dashboard Cards -->
                 <div class="container py-4">
+                    <?php
+
+                    /* Total Products */
+
+                    $product_count = mysqli_fetch_assoc(
+
+                        mysqli_query(
+
+                            $conn,
+
+                            "SELECT COUNT(*) AS total
+
+        FROM products"
+
+                        )
+
+                    );
+
+                    /* Total Orders */
+
+                    $order_count = mysqli_fetch_assoc(
+
+                        mysqli_query(
+
+                            $conn,
+
+                            "SELECT COUNT(*) AS total
+
+        FROM orders"
+
+                        )
+
+                    );
+
+                    /* Total Users (Buyers + Sellers + Delivery Agents) */
+
+                    $user_count = mysqli_fetch_assoc(
+
+                        mysqli_query(
+
+                            $conn,
+
+                            "SELECT COUNT(*) AS total
+
+        FROM users"
+
+                        )
+
+                    );
+
+                    /* Total Revenue */
+
+                    $revenue = mysqli_fetch_assoc(
+
+                        mysqli_query(
+
+                            $conn,
+
+                            "SELECT
+
+        SUM(products.product_price * orders.quantity)
+
+        AS total_revenue
+
+        FROM orders
+
+        INNER JOIN products
+
+        ON orders.product_id = products.id
+
+        WHERE orders.delivery_status='Delivered'"
+
+                        )
+
+                    );
+
+                    $total_revenue = $revenue['total_revenue'] ?? 0;
+
+                    ?>
 
                     <div class="row g-4">
 
@@ -216,7 +317,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                150
+                                                <?php echo $product_count['total']; ?>
                                             </h2>
 
                                         </div>
@@ -247,7 +348,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                320
+                                                <?php echo $order_count['total']; ?>
                                             </h2>
 
                                         </div>
@@ -278,7 +379,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                540
+                                                <?php echo $user_count['total']; ?>
                                             </h2>
 
                                         </div>
@@ -309,7 +410,7 @@
                                             </h6>
 
                                             <h2 class="fw-bold">
-                                                ₹2L
+                                                ₹<?php echo number_format($total_revenue); ?>
                                             </h2>
 
                                         </div>
@@ -337,9 +438,9 @@
 
                             <div class="table-responsive">
 
-                                <table class="table align-middle">
+                                <table class="table align-middle table-bordered">
 
-                                    <thead>
+                                    <thead class="table-dark">
 
                                         <tr>
 
@@ -355,56 +456,127 @@
 
                                     <tbody>
 
-                                        <tr>
+                                        <?php
 
-                                            <td>#1001</td>
-                                            <td>Tuhin Sarkar</td>
-                                            <td>Laptop</td>
-                                            <td>₹55,000</td>
+                                        $query = mysqli_query(
 
-                                            <td>
+                                            $conn,
 
-                                                <span class="badge bg-success">
-                                                    Delivered
-                                                </span>
+                                            "SELECT
 
-                                            </td>
+                        orders.*,
 
-                                        </tr>
+                        products.product_name,
 
-                                        <tr>
+                        products.product_price
 
-                                            <td>#1002</td>
-                                            <td>Rahul Das</td>
-                                            <td>Shoes</td>
-                                            <td>₹2,499</td>
+                        FROM orders
 
-                                            <td>
+                        INNER JOIN products
 
-                                                <span class="badge bg-warning text-dark">
-                                                    Shipping
-                                                </span>
+                        ON orders.product_id = products.id
 
-                                            </td>
+                        ORDER BY orders.id DESC
 
-                                        </tr>
+                        LIMIT 10"
 
-                                        <tr>
+                                        );
 
-                                            <td>#1003</td>
-                                            <td>Priya Roy</td>
-                                            <td>Perfume</td>
-                                            <td>₹1,299</td>
+                                        if (mysqli_num_rows($query) > 0) {
 
-                                            <td>
+                                            while ($row = mysqli_fetch_assoc($query)) {
 
-                                                <span class="badge bg-danger">
-                                                    Cancelled
-                                                </span>
+                                        ?>
 
-                                            </td>
+                                                <tr>
 
-                                        </tr>
+                                                    <td>
+
+                                                        #<?php echo $row['id']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['full_name']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['product_name']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        ₹<?php echo number_format(
+
+                                                                $row['product_price'] *
+
+                                                                    $row['quantity']
+
+                                                            ); ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php
+
+                                                        if ($row['delivery_status'] == 'Delivered') {
+
+                                                            echo "<span class='badge bg-success'>
+                                Delivered
+                                </span>";
+                                                        } elseif ($row['delivery_status'] == 'Cancelled') {
+
+                                                            echo "<span class='badge bg-danger'>
+                                Cancelled
+                                </span>";
+                                                        } elseif ($row['delivery_status'] == 'Out For Delivery') {
+
+                                                            echo "<span class='badge bg-primary'>
+                                Out For Delivery
+                                </span>";
+                                                        } elseif ($row['seller_status'] == 'Approved') {
+
+                                                            echo "<span class='badge bg-info'>
+                                Shipped
+                                </span>";
+                                                        } else {
+
+                                                            echo "<span class='badge bg-warning text-dark'>
+                                Pending
+                                </span>";
+                                                        }
+
+                                                        ?>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <?php
+
+                                            }
+                                        } else {
+
+                                            ?>
+
+                                            <tr>
+
+                                                <td colspan="5"
+
+                                                    class="text-center">
+
+                                                    No Orders Found
+
+                                                </td>
+
+                                            </tr>
+
+                                        <?php } ?>
 
                                     </tbody>
 

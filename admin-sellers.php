@@ -1,99 +1,28 @@
 <?php
 
-
 include 'admin-session.php';
-
-
 
 include 'connect.php';
 
-/* Add Feedback */
-
-if (isset($_POST['add_feedback'])) {
-
-    $customer_name = $_POST['customer_name'];
-
-    $rating = $_POST['rating'];
-
-    $message = $_POST['message'];
-
-    $image = $_FILES['image']['name'];
-
-    $tmp_name = $_FILES['image']['tmp_name'];
-
-    move_uploaded_file(
-
-        $tmp_name,
-
-        "uploads/" . $image
-
-    );
-
-    mysqli_query(
-
-        $conn,
-
-        "INSERT INTO feedback(
-
-        customer_name,
-        image,
-        rating,
-        message
-
-        )
-
-        VALUES(
-
-        '$customer_name',
-        '$image',
-        '$rating',
-        '$message'
-
-        )"
-
-    );
-
-    header("Location: admin-feedback.php");
-
-    exit();
-}
-
-/* Delete Feedback */
+/* Delete Seller */
 
 if (isset($_GET['delete'])) {
 
     $id = $_GET['delete'];
 
-    $get_image = mysqli_query(
-
-        $conn,
-
-        "SELECT image
-
-        FROM feedback
-
-        WHERE id='$id'"
-
-    );
-
-    $row = mysqli_fetch_assoc($get_image);
-
-    if (!empty($row['image'])) {
-
-        unlink("uploads/" . $row['image']);
-    }
-
     mysqli_query(
 
         $conn,
 
-        "DELETE FROM feedback
+        "DELETE FROM users
 
-        WHERE id='$id'"
+        WHERE id='$id'
+
+        AND role='seller'"
 
     );
 
-    header("Location: admin-feedback.php");
+    header("Location: admin-sellers.php");
 
     exit();
 }
@@ -181,7 +110,7 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-user.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white ">
 
                             <i class="bi bi-people"></i>
                             Users
@@ -193,7 +122,7 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-sellers.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white bg-primary">
 
                             <i class="bi bi-shop"></i>
                             Sellers
@@ -226,13 +155,14 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-feedback.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white">
 
                             <i class="bi bi-chat-left-text"></i>
                             feedback
 
                         </a>
                     </li>
+
 
 
 
@@ -314,79 +244,52 @@ if (isset($_GET['delete'])) {
                 </nav>
 
                 <!-- Dashboard Cards -->
-                <div class="container mt-5">
-
-                    <div class="card shadow mb-4">
-
-                        <div class="card-body">
-
-                            <h3 class="mb-4">
-
-                                Add Feedback
-
-                            </h3>
-
-                            <form method="POST" enctype="multipart/form-data">
-
-                                <input type="text"
-                                    name="customer_name"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Name"
-                                    required>
-
-                                <input type="file"
-                                    name="image"
-                                    class="form-control mb-3"
-                                    required>
-
-                                <select
-                                    name="rating"
-                                    class="form-select mb-3"
-                                    required>
-
-                                    <option value="">Select Rating</option>
-                                    <option value="5">★★★★★</option>
-                                    <option value="4">★★★★☆</option>
-                                    <option value="3">★★★☆☆</option>
-                                    <option value="2">★★☆☆☆</option>
-                                    <option value="1">★☆☆☆☆</option>
-
-                                </select>
-
-                                <textarea
-                                    name="message"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Feedback"
-                                    required></textarea>
-
-                                <button
-                                    type="submit"
-                                    name="add_feedback"
-                                    class="btn btn-dark">
-
-                                    Add Feedback
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
+                <div class="container py-4">
 
                     <div class="card shadow">
 
                         <div class="card-body">
 
-                            <h3 class="mb-4">
+                            <?php
 
-                                All Feedback
+                            $seller_count = mysqli_fetch_assoc(
 
-                            </h3>
+                                mysqli_query(
+
+                                    $conn,
+
+                                    "SELECT COUNT(*) AS total
+
+                    FROM users
+
+                    WHERE role='seller'"
+
+                                )
+
+                            );
+
+                            ?>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                                <h3>
+
+                                    All Sellers
+
+                                </h3>
+
+                                <span class="badge bg-dark fs-6">
+
+                                    Total Sellers :
+                                    <?php echo $seller_count['total']; ?>
+
+                                </span>
+
+                            </div>
 
                             <div class="table-responsive">
 
-                                <table class="table table-bordered table-hover">
+                                <table class="table table-bordered table-hover align-middle">
 
                                     <thead class="table-dark">
 
@@ -394,9 +297,9 @@ if (isset($_GET['delete'])) {
 
                                             <th>ID</th>
                                             <th>Image</th>
-                                            <th>Customer</th>
-                                            <th>Rating</th>
-                                            <th>Feedback</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Total Products</th>
                                             <th>Action</th>
 
                                         </tr>
@@ -413,64 +316,133 @@ if (isset($_GET['delete'])) {
 
                                             "SELECT *
 
-                        FROM feedback
+                            FROM users
 
-                        ORDER BY id DESC"
+                            WHERE role='seller'
+
+                            ORDER BY id DESC"
 
                                         );
 
-                                        while ($row = mysqli_fetch_assoc($query)) {
+                                        if (mysqli_num_rows($query) > 0) {
+
+                                            while ($row = mysqli_fetch_assoc($query)) {
 
                                         ?>
 
+                                                <tr>
+
+                                                    <td>
+
+                                                        <?php echo $row['id']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php
+
+                                                        if (!empty($row['image'])) {
+
+                                                        ?>
+
+                                                            <img src="uploads/<?php echo $row['image']; ?>"
+
+                                                                width="60"
+
+                                                                height="60"
+
+                                                                style="object-fit:cover;border-radius:50%;">
+
+                                                        <?php
+
+                                                        } else {
+
+                                                        ?>
+
+                                                            <img src="images/user.jpg"
+
+                                                                width="60"
+
+                                                                height="60"
+
+                                                                style="object-fit:cover;border-radius:50%;">
+
+                                                        <?php } ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['name']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['email']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php
+
+                                                        $seller_id = $row['id'];
+
+                                                        $products = mysqli_num_rows(
+
+                                                            mysqli_query(
+
+                                                                $conn,
+
+                                                                "SELECT *
+
+                                        FROM products
+
+                                        WHERE seller_id='$seller_id'"
+
+                                                            )
+
+                                                        );
+
+                                                        echo $products;
+
+                                                        ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <a href="?delete=<?php echo $row['id']; ?>"
+
+                                                            class="btn btn-danger btn-sm"
+
+                                                            onclick="return confirm('Delete this seller?')">
+
+                                                            <i class="bi bi-trash"></i>
+
+                                                            Delete
+
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <?php
+
+                                            }
+                                        } else {
+
+                                            ?>
+
                                             <tr>
 
-                                                <td>
+                                                <td colspan="6"
+                                                    class="text-center">
 
-                                                    <?php echo $row['id']; ?>
-
-                                                </td>
-                                                <td>
-
-                                                    <img src="uploads/<?php echo $row['image']; ?>"
-
-                                                        width="60"
-
-                                                        height="60"
-
-                                                        style="object-fit:cover;border-radius:50%;">
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['customer_name']; ?>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['rating']; ?>/5
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['message']; ?>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <a href="?delete=<?php echo $row['id']; ?>"
-
-                                                        class="btn btn-danger btn-sm"
-
-                                                        onclick="return confirm('Delete this feedback?')">
-
-                                                        Delete
-
-                                                    </a>
+                                                    No Sellers Found
 
                                                 </td>
 
@@ -489,6 +461,7 @@ if (isset($_GET['delete'])) {
                     </div>
 
                 </div>
+
             </div>
 
         </div>

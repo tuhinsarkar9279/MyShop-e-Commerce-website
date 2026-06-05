@@ -1,3 +1,44 @@
+<?php
+include 'delivery-session.php';
+include 'connect.php';
+
+$pending = mysqli_fetch_assoc(
+    mysqli_query(
+        $conn,
+        "SELECT COUNT(*) AS total
+        FROM orders
+        WHERE delivery_status='Pending'
+        OR delivery_status='Out For Delivery'"
+    )
+);
+
+$delivered = mysqli_fetch_assoc(
+    mysqli_query(
+        $conn,
+        "SELECT COUNT(*) AS total
+        FROM orders
+        WHERE delivery_status='Delivered'"
+    )
+);
+
+$earning = mysqli_fetch_assoc(
+    mysqli_query(
+        $conn,
+        "SELECT
+        SUM(products.product_price * orders.quantity)
+        AS total_earnings
+        FROM orders
+        INNER JOIN products
+        ON orders.product_id = products.id
+        WHERE orders.delivery_status='Delivered'"
+    )
+);
+
+$total_earnings = $earning['total_earnings'] ?? 0;
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,8 +82,8 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
-                            class="nav-link text-white active">
+                        <a href="dadmin.php"
+                            class="nav-link text-white active bg-primary">
 
                             <i class="bi bi-speedometer2"></i>
                             Dashboard
@@ -53,7 +94,7 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery-agent.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-truck"></i>
@@ -65,11 +106,11 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery-all-orders.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-box-seam"></i>
-                            Delivered Orders
+                            All Orders
 
                         </a>
 
@@ -77,11 +118,11 @@
 
                     <li class="nav-item mb-2">
 
-                        <a href="#"
+                        <a href="delivery-complete.php"
                             class="nav-link text-white">
 
                             <i class="bi bi-geo-alt"></i>
-                            Delivery Address
+                            Out For Delivery
 
                         </a>
 
@@ -89,7 +130,7 @@
 
                     <li class="nav-item mt-4">
 
-                        <a href="#"
+                        <a href="delivery-logout.php"
                             class="btn btn-danger w-100">
 
                             Logout
@@ -112,280 +153,378 @@
                         Delivery Dashboard
                     </h4>
 
-                    <div class="d-flex align-items-center">
+<div class="d-flex align-items-center">
 
-                        <span class="me-3 fw-semibold">
-                            Welcome Delivery Agent
-                        </span>
+    <span class="me-3 fw-semibold">
 
-                        <img src="images/delivery.jpg"
-                            class="rounded-circle"
-                            width="45"
-                            height="45"
-                            style="object-fit:cover;">
+        Welcome,
 
-                    </div>
+        <?php echo $delivery_name; ?>
+
+    </span>
+
+    <?php if(!empty($delivery_image)){ ?>
+
+        <img src="uploads/<?php echo $delivery_image; ?>"
+
+            class="rounded-circle"
+
+            width="45"
+
+            height="45"
+
+            style="object-fit:cover;">
+
+    <?php }else{ ?>
+
+        <img src="images/user.jpg"
+
+            class="rounded-circle"
+
+            width="45"
+
+            height="45"
+
+            style="object-fit:cover;">
+
+    <?php } ?>
+
+</div>
 
                 </nav>
 
                 <!-- Dashboard Content -->
                 <div class="container py-4">
+                    <?php
+
+/* Pending Deliveries */
+
+$pending_query = mysqli_query(
+
+    $conn,
+
+    "SELECT COUNT(*) AS total
+
+    FROM orders
+
+    WHERE delivery_status='Pending'
+
+    OR delivery_status='Out For Delivery'"
+
+);
+
+$pending = mysqli_fetch_assoc($pending_query);
+
+/* Delivered Orders */
+
+$delivered_query = mysqli_query(
+
+    $conn,
+
+    "SELECT COUNT(*) AS total
+
+    FROM orders
+
+    WHERE delivery_status='Delivered'"
+
+);
+
+$delivered = mysqli_fetch_assoc($delivered_query);
+
+/* Earnings */
+
+$earning_query = mysqli_query(
+
+    $conn,
+
+    "SELECT
+
+    SUM(products.product_price * orders.quantity)
+
+    AS total_earnings
+
+    FROM orders
+
+    INNER JOIN products
+
+    ON orders.product_id = products.id
+
+    WHERE orders.delivery_status='Delivered'"
+
+);
+
+$earning = mysqli_fetch_assoc($earning_query);
+
+$total_earnings = $earning['total_earnings'] ?? 0;
+
+?>
 
                     <!-- Cards -->
-                    <div class="row g-4">
+<div class="row g-4">
 
-                        <!-- Pending -->
-                        <div class="col-lg-4 col-md-6">
+    <!-- Pending Deliveries -->
+    <div class="col-lg-4 col-md-6">
 
-                            <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow-sm">
 
-                                <div class="card-body">
+            <div class="card-body">
 
-                                    <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
 
-                                        <div>
+                    <div>
 
-                                            <h6 class="text-muted">
-                                                Pending Deliveries
-                                            </h6>
+                        <h6 class="text-muted">
+                            Pending Deliveries
+                        </h6>
 
-                                            <h2 class="fw-bold">
-                                                12
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-truck fs-1 text-warning"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Delivered -->
-                        <div class="col-lg-4 col-md-6">
-
-                            <div class="card border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Delivered Orders
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                85
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-check-circle fs-1 text-success"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Earnings -->
-                        <div class="col-lg-4 col-md-6">
-
-                            <div class="card border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <div class="d-flex justify-content-between">
-
-                                        <div>
-
-                                            <h6 class="text-muted">
-                                                Earnings
-                                            </h6>
-
-                                            <h2 class="fw-bold">
-                                                ₹15,000
-                                            </h2>
-
-                                        </div>
-
-                                        <i class="bi bi-currency-rupee fs-1 text-primary"></i>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
+                        <h2 class="fw-bold">
+                            <?php echo $pending['total']; ?>
+                        </h2>
 
                     </div>
 
-                    <!-- Shipping Orders Table -->
-                    <div class="card border-0 shadow-sm mt-5">
+                    <i class="bi bi-truck fs-1 text-warning"></i>
 
-                        <div class="card-body">
+                </div>
 
-                            <h4 class="fw-bold mb-4">
-                                Shipping Orders
-                            </h4>
+            </div>
 
-                            <div class="table-responsive">
+        </div>
 
-                                <table class="table align-middle">
+    </div>
 
-                                    <thead>
+    <!-- Delivered Orders -->
+    <div class="col-lg-4 col-md-6">
 
-                                        <tr>
+        <div class="card border-0 shadow-sm">
 
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Product</th>
-                                            <th>Address</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+            <div class="card-body">
 
-                                        </tr>
+                <div class="d-flex justify-content-between">
 
-                                    </thead>
+                    <div>
 
-                                    <tbody>
+                        <h6 class="text-muted">
+                            Delivered Orders
+                        </h6>
 
-                                        <!-- Order -->
-                                        <tr>
-
-                                            <td>
-                                                #1001
-                                            </td>
-
-                                            <td>
-                                                Tuhin Sarkar
-                                            </td>
-
-                                            <td>
-                                                Gaming Laptop
-                                            </td>
-
-                                            <td>
-                                                Agartala, Tripura
-                                            </td>
-
-                                            <td>
-
-                                                <span class="badge bg-warning text-dark">
-                                                    Shipping
-                                                </span>
-
-                                            </td>
-
-                                            <td>
-
-                                                <button class="btn btn-success btn-sm">
-
-                                                    Mark Delivered
-
-                                                </button>
-
-                                            </td>
-
-                                        </tr>
-
-                                        <!-- Order -->
-                                        <tr>
-
-                                            <td>
-                                                #1002
-                                            </td>
-
-                                            <td>
-                                                Rahul Das
-                                            </td>
-
-                                            <td>
-                                                Sports Shoes
-                                            </td>
-
-                                            <td>
-                                                Guwahati, Assam
-                                            </td>
-
-                                            <td>
-
-                                                <span class="badge bg-primary">
-                                                    Out for Delivery
-                                                </span>
-
-                                            </td>
-
-                                            <td>
-
-                                                <button class="btn btn-success btn-sm">
-
-                                                    Mark Delivered
-
-                                                </button>
-
-                                            </td>
-
-                                        </tr>
-
-                                        <!-- Order -->
-                                        <tr>
-
-                                            <td>
-                                                #1003
-                                            </td>
-
-                                            <td>
-                                                Priya Roy
-                                            </td>
-
-                                            <td>
-                                                Perfume
-                                            </td>
-
-                                            <td>
-                                                Kolkata, West Bengal
-                                            </td>
-
-                                            <td>
-
-                                                <span class="badge bg-success">
-                                                    Delivered
-                                                </span>
-
-                                            </td>
-
-                                            <td>
-
-                                                <button class="btn btn-secondary btn-sm"
-                                                    disabled>
-
-                                                    Completed
-
-                                                </button>
-
-                                            </td>
-
-                                        </tr>
-
-                                    </tbody>
-
-                                </table>
-
-                            </div>
-
-                        </div>
+                        <h2 class="fw-bold">
+                            <?php echo $delivered['total']; ?>
+                        </h2>
 
                     </div>
+
+                    <i class="bi bi-check-circle fs-1 text-success"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Earnings -->
+    
+
+</div>
+
+<!-- Shipping Orders Table -->
+
+<div class="card border-0 shadow-sm mt-5">
+
+    <div class="card-body">
+
+        <h4 class="fw-bold mb-4">
+            Shipping Orders
+        </h4>
+
+        <div class="table-responsive">
+
+            <table class="table align-middle table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <?php
+
+                    $query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT
+
+                        orders.*,
+
+                        products.product_name
+
+                        FROM orders
+
+                        INNER JOIN products
+
+                        ON orders.product_id = products.id
+
+                        WHERE orders.seller_status='Approved'
+
+                        ORDER BY orders.id DESC"
+
+                    );
+
+                    if(mysqli_num_rows($query) > 0){
+
+                        while($row = mysqli_fetch_assoc($query)){
+
+                    ?>
+
+                    <tr>
+
+                        <td>
+
+                            #<?php echo $row['id']; ?>
+
+                        </td>
+
+                        <td>
+
+                            <?php echo $row['full_name']; ?>
+
+                        </td>
+
+                        <td>
+
+                            <?php echo $row['product_name']; ?>
+
+                        </td>
+
+                        <td>
+
+                            <?php
+
+                            echo $row['city'];
+
+                            echo ", ";
+
+                            echo $row['state'];
+
+                            ?>
+
+                        </td>
+
+                        <td>
+
+                            <?php
+
+                            if($row['delivery_status']=="Pending"){
+
+                                echo "<span class='badge bg-warning text-dark'>
+                                Pending
+                                </span>";
+
+                            }elseif($row['delivery_status']=="Out For Delivery"){
+
+                                echo "<span class='badge bg-primary'>
+                                Out For Delivery
+                                </span>";
+
+                            }elseif($row['delivery_status']=="Delivered"){
+
+                                echo "<span class='badge bg-success'>
+                                Delivered
+                                </span>";
+
+                            }elseif($row['delivery_status']=="Cancelled"){
+
+                                echo "<span class='badge bg-danger'>
+                                Cancelled
+                                </span>";
+
+                            }
+
+                            ?>
+
+                        </td>
+
+                        <td>
+
+                            <?php
+
+                            if($row['delivery_status']=="Delivered"){
+
+                            ?>
+
+                            <button
+
+                                class="btn btn-secondary btn-sm"
+
+                                disabled>
+
+                                Completed
+
+                            </button>
+
+                            <?php
+
+                            }else{
+
+                            ?>
+
+                            <a href="delivery-complete.php?delivered=<?php echo $row['id']; ?>"
+
+                                class="btn btn-success btn-sm">
+
+                                Mark Delivered
+
+                            </a>
+
+                            <?php } ?>
+
+                        </td>
+
+                    </tr>
+
+                    <?php
+
+                        }
+
+                    }else{
+
+                    ?>
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+
+                            No Orders Found
+
+                        </td>
+
+                    </tr>
+
+                    <?php } ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
 
                 </div>
 

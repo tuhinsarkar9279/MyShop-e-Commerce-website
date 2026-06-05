@@ -1,16 +1,8 @@
 <?php
 
-session_start();
-
 include 'connect.php';
 
-if (!isset($_SESSION['user_id'])) {
-
-    header("Location:user-login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
+$search = trim($_GET['search'] ?? '');
 
 ?>
 
@@ -20,31 +12,28 @@ $user_id = $_SESSION['user_id'];
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Wishlist Page</title>
+    <title>Search Products</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
 </head>
 
-<body class="bg-light">
+<body>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
+
         <div class="container">
 
-            <div class="container-fluid align-items-center d-flex">
+            <div class="container-fluid p-0 align-items-center d-flex">
 
                 <!-- Logo -->
-                <a class="navbar-brand fw-bold" href="index.php">
-                    <img style="width: 25%;" src="assets/img/logo.png" alt="logo">
+                <a class=" " href="index.php">
+                    <img style="width: 6.25em;" src="assets/img/logo.png" alt="logo">
 
                 </a>
 
@@ -52,64 +41,65 @@ $user_id = $_SESSION['user_id'];
 
 
                 <!-- Navbar Content -->
-                <div class="collapse navbar-collapse justify-content-between"
-                    id="navbarSupportedContent">
 
-                    <!-- Search Bar -->
-                    <form class="d-flex mx-auto position-relative"
-                        method="GET"
-                        action="search.php">
 
-                        <input
-                            class="form-control pe-5"
-                            type="search"
-                            name="search"
-                            placeholder="Search Products..."
-                            required>
+                <!-- Search Bar -->
+                <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                        <button
-                            class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
-                            type="submit">
+                    <input
+                        class="form-control pe-5"
+                        type="search"
+                        name="search"
+                        placeholder="Search Products..."
+                        required>
 
-                            <i class="bi bi-search fs-5"></i>
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        type="submit">
 
-                        </button>
+                        <i class="bi bi-search fs-5"></i>
 
-                    </form>
+                    </button>
 
-                    <!-- Right Side Icons -->
-                    <div class="d-flex align-items-center gap-3">
+                </form>
+                <!-- Right Side Icons -->
+                <div class="d-flex align-items-center gap-3">
 
-                        <!-- Wishlist -->
-                        <a href="wishlist.php"
-                            class="text-decoration-none text-dark">
+                    <!-- Wishlist -->
+                    <a href="wishlist.php"
+                        class="text-decoration-none text-dark">
 
-                            <i class="bi bi-heart fs-4"></i>
-                        </a>
+                        <i class="bi bi-heart fs-4"></i>
+                    </a>
 
-                        <!-- Cart -->
-                        <a href="cart.php"
-                            class="text-decoration-none text-dark position-relative">
+                    <!-- Cart -->
+                    <a href="cart.php"
+                        class="text-decoration-none text-dark position-relative">
 
-                            <i class="bi bi-cart3 fs-4"></i>
+                        <i class="bi bi-cart3 fs-4"></i>
 
-                            <!-- Cart Count -->
+                        <!-- Cart Count -->
 
-                        </a>
+                    </a>
 
-                        <!-- Profile -->
-                        <a href="profile.php"
-                            class="text-decoration-none text-dark">
+                    <!-- Profile -->
+                    <a href="profile.php"
+                        class="text-decoration-none text-dark">
 
-                            <i class="bi bi-person-circle fs-4"></i>
-                        </a>
-
-                    </div>
+                        <i class="bi bi-person-circle fs-4"></i>
+                    </a>
 
                 </div>
+
             </div>
         </div>
+        </div>
     </nav>
+
+
+
     <nav class="navbar mt-0 p-0 navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <div class="container barr">
@@ -138,50 +128,50 @@ $user_id = $_SESSION['user_id'];
         </div>
     </nav>
 
-    <!-- Wishlist Section -->
-    <section class="container my-5">
+    <div class="container mt-5">
 
-        <!-- Heading -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <h2 class="fw-bold">
-                My Wishlist
-            </h2>
+        <?php if (empty($search)) { ?>
 
-        </div>
+            <div class="alert alert-warning text-center">
 
-        <!-- Wishlist Products -->
-        <div class="row g-4">
+                Please enter a product name to search.
 
-            <div class="container my-5">
+            </div>
 
-                <div class="row">
+        <?php } else { ?>
 
-                    <?php
+            <h3 class="mb-4">
 
-                    $query = mysqli_query(
+                Search Results For:
 
-                        $conn,
+                "<?php echo htmlspecialchars($search); ?>"
 
-                        "SELECT
+            </h3>
 
-        wishlist.id AS wishlist_id,
+            <div class="row">
 
-        products.*
+                <?php
 
-        FROM wishlist
+                $query = mysqli_query(
 
-        INNER JOIN products
+                    $conn,
 
-        ON wishlist.product_id = products.id
+                    "SELECT *
 
-        WHERE wishlist.user_id='$user_id'"
+                FROM products
 
-                    );
+                WHERE product_name LIKE '%$search%'
+
+                ORDER BY id DESC"
+
+                );
+
+                if (mysqli_num_rows($query) > 0) {
 
                     while ($row = mysqli_fetch_assoc($query)) {
 
-                    ?>
+                ?>
 
                         <div class="col-md-3 mb-4">
 
@@ -191,37 +181,29 @@ $user_id = $_SESSION['user_id'];
 
                                     class="card-img-top"
 
-                                    height="220"
+                                    height="250"
 
                                     style="object-fit:cover;">
 
                                 <div class="card-body">
 
-                                    <h5>
+                                    <h5 class="card-title">
 
                                         <?php echo $row['product_name']; ?>
 
                                     </h5>
 
-                                    <p class="text-success fw-bold">
+                                    <h6 class="text-success">
 
                                         ₹<?php echo $row['product_price']; ?>
 
-                                    </p>
+                                    </h6>
 
-                                    <a href="add-cart.php?id=<?php echo $row['id']; ?>"
+                                    <a href="product-details.php?id=<?php echo $row['id']; ?>"
 
-                                        class="btn btn-dark">
+                                        class="btn btn-dark w-100">
 
-                                        Add To Cart
-
-                                    </a>
-
-                                    <a href="remove-wishlist.php?id=<?php echo $row['wishlist_id']; ?>"
-
-                                        class="btn btn-danger">
-
-                                        Remove
+                                        View Product
 
                                     </a>
 
@@ -231,16 +213,32 @@ $user_id = $_SESSION['user_id'];
 
                         </div>
 
-                    <?php } ?>
+                    <?php
 
-                </div>
+                    }
+                } else {
+
+                    ?>
+
+                    <div class="col-12">
+
+                        <div class="alert alert-danger text-center">
+
+                            No Products Found For
+
+                            "<strong><?php echo htmlspecialchars($search); ?></strong>"
+
+                        </div>
+
+                    </div>
+
+                <?php } ?>
 
             </div>
 
-        </div>
+        <?php } ?>
 
-    </section>
-
+    </div>
     <footer class="bg-dark text-light pt-5 mt-5 pb-3">
 
         <div class="container">
@@ -396,9 +394,6 @@ $user_id = $_SESSION['user_id'];
         </div>
 
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

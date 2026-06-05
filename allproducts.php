@@ -25,6 +25,33 @@ $result = mysqli_query($conn, $query);
 </head>
 
 <body>
+    <?php
+
+$cart_count = 0;
+
+if(isset($_SESSION['user_id'])){
+
+    $user_id = $_SESSION['user_id'];
+
+    $cart_query = mysqli_query(
+
+        $conn,
+
+        "SELECT COALESCE(SUM(quantity),0) AS total
+
+        FROM cart
+
+        WHERE user_id='$user_id'"
+
+    );
+
+    $cart_data = mysqli_fetch_assoc($cart_query);
+
+    $cart_count = $cart_data['total'];
+
+}
+
+?>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
         <div class="container">
 
@@ -52,16 +79,26 @@ $result = mysqli_query($conn, $query);
                     id="navbarSupportedContent">
 
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto w-50" role="search">
-                        <input class="form-control me-2"
-                            type="search"
-                            placeholder="Search Products..."
-                            aria-label="Search">
+                    <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                        <button class="btn btn-dark" type="submit">
-                            Search
-                        </button>
-                    </form>
+                    <input
+                        class="form-control pe-5"
+                        type="search"
+                        name="search"
+                        placeholder="Search Products..."
+                        required>
+
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        type="submit">
+
+                        <i class="bi bi-search fs-5"></i>
+
+                    </button>
+
+                </form>
 
                     <!-- Right Side Icons -->
                     <div class="d-flex align-items-center gap-3">
@@ -80,9 +117,7 @@ $result = mysqli_query($conn, $query);
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
+
                         </a>
 
                         <!-- Profile -->
@@ -338,27 +373,32 @@ $result = mysqli_query($conn, $query);
                             <div class="d-flex gap-2">
 
                                 <!-- Add To Cart -->
-                                <a href="add-cart.php?id=<?php
-                                                            echo $row['id'];
-                                                            ?>"
+                                <form action="add-cart.php" method="GET">
 
-                                    class="btn btn-dark w-100">
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="<?php echo $row['id']; ?>">
 
-                                    <i class="bi bi-cart"></i>
-                                    Cart
+                                        <button
+                                            type="submit"
+                                            class="btn btn-dark">
 
-                                </a>
+                                            Add to Cart
+
+                                        </button>
+
+                                    </form>
 
                                 <!-- Wishlist -->
-                                <a href="wishlist.php?id=<?php
-                                                            echo $row['id'];
-                                                            ?>"
+                                 <a href="add-wishlist.php?id=<?php echo $row['id']; ?>"
 
-                                    class="btn btn-outline-danger">
+                                        class="btn btn-outline-danger">
 
-                                    <i class="bi bi-heart"></i>
+                                        <ion-icon class="fs-5 mt-1"
+                                            name="heart-outline"></ion-icon>
 
-                                </a>
+                                    </a>
 
                             </div>
 

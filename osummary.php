@@ -13,6 +13,111 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 ?>
+<?php
+
+$address_query = mysqli_query(
+
+    $conn,
+
+    "SELECT *
+
+    FROM user_address
+
+    WHERE user_id='$user_id'
+
+    LIMIT 1"
+
+);
+
+$address = mysqli_fetch_assoc($address_query);
+
+?>
+<?php
+
+if (isset($_POST['save_address'])) {
+
+    $full_name = $_POST['full_name'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $pincode = $_POST['pincode'];
+
+    $check = mysqli_query(
+
+        $conn,
+
+        "SELECT *
+
+        FROM user_address
+
+        WHERE user_id='$user_id'"
+
+    );
+
+    if (mysqli_num_rows($check) > 0) {
+
+        $query = mysqli_query(
+
+            $conn,
+
+            "UPDATE user_address
+
+            SET
+
+            full_name='$full_name',
+            phone='$phone',
+            address='$address',
+            city='$city',
+            state='$state',
+            pincode='$pincode'
+
+            WHERE user_id='$user_id'"
+
+        );
+    } else {
+
+        $query = mysqli_query(
+
+            $conn,
+
+            "INSERT INTO user_address(
+
+            user_id,
+            full_name,
+            phone,
+            address,
+            city,
+            state,
+            pincode
+
+            )
+
+            VALUES(
+
+            '$user_id',
+            '$full_name',
+            '$phone',
+            '$address',
+            '$city',
+            '$state',
+            '$pincode'
+
+            )"
+
+        );
+    }
+
+    if (!$query) {
+
+        die(mysqli_error($conn));
+    }
+
+    header("Location: osummary.php");
+
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,16 +160,19 @@ $user_id = $_SESSION['user_id'];
 
 
                 <!-- Search Bar -->
-                <form class="d-flex mx-auto position-relative" role="search">
+                <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                    <!-- Search Input -->
-                    <input class="form-control pe-5"
+                    <input
+                        class="form-control pe-5"
                         type="search"
+                        name="search"
                         placeholder="Search Products..."
-                        aria-label="Search">
+                        required>
 
-                    <!-- Search Icon Button -->
-                    <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                         type="submit">
 
                         <i class="bi bi-search fs-5"></i>
@@ -89,9 +197,7 @@ $user_id = $_SESSION['user_id'];
                         <i class="bi bi-cart3 fs-4"></i>
 
                         <!-- Cart Count -->
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
+
                     </a>
 
                     <!-- Profile -->
@@ -161,13 +267,13 @@ $user_id = $_SESSION['user_id'];
             <div class="col-lg-8">
 
                 <!-- Ordered Products -->
-<?php
+                <?php
 
-$query = mysqli_query(
+                $query = mysqli_query(
 
-    $conn,
+                    $conn,
 
-    "SELECT
+                    "SELECT
 
     order_summary.*,
 
@@ -183,51 +289,51 @@ $query = mysqli_query(
 
     ORDER BY order_summary.id DESC"
 
-);
+                );
 
-while($row = mysqli_fetch_assoc($query)){
+                while ($row = mysqli_fetch_assoc($query)) {
 
-?>
+                ?>
 
-<div class="row align-items-center mb-4">
+                    <div class="row align-items-center mb-4">
 
-    <div class="col-md-3">
+                        <div class="col-md-3">
 
-        <img src="uploads/<?php echo $row['product_image']; ?>"
+                            <img src="uploads/<?php echo $row['product_image']; ?>"
 
-        class="img-fluid rounded">
+                                class="img-fluid rounded">
 
-    </div>
+                        </div>
 
-    <div class="col-md-6">
+                        <div class="col-md-6">
 
-        <h5>
+                            <h5>
 
-            <?php echo $row['product_name']; ?>
+                                <?php echo $row['product_name']; ?>
 
-        </h5>
+                            </h5>
 
-        <h5 class="text-success">
+                            <h5 class="text-success">
 
-            ₹<?php echo $row['product_price']; ?>
+                                ₹<?php echo $row['product_price']; ?>
 
-        </h5>
+                            </h5>
 
-    </div>
+                        </div>
 
-    <div class="col-md-3">
+                        <div class="col-md-3">
 
-        Qty:
+                            Qty:
 
-        <?php echo $row['quantity']; ?>
+                            <?php echo $row['quantity']; ?>
 
-    </div>
+                        </div>
 
-</div>
+                    </div>
 
-<hr>
+                    <hr>
 
-<?php } ?>
+                <?php } ?>
                 <!-- Address -->
                 <div class="card border-0 shadow-sm mb-4">
 
@@ -239,7 +345,9 @@ while($row = mysqli_fetch_assoc($query)){
 
                         </h4>
 
-                        <form>
+
+
+                        <form method="POST">
 
                             <div class="row">
 
@@ -247,12 +355,20 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-md-6 mb-3">
 
                                     <label class="form-label">
+
                                         Full Name
+
                                     </label>
 
                                     <input type="text"
+
+                                        name="full_name"
+
                                         class="form-control"
-                                        placeholder="Enter full name">
+
+                                        value="<?php echo $address['full_name'] ?? ''; ?>"
+
+                                        required>
 
                                 </div>
 
@@ -260,12 +376,20 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-md-6 mb-3">
 
                                     <label class="form-label">
+
                                         Phone Number
+
                                     </label>
 
                                     <input type="tel"
+
+                                        name="phone"
+
                                         class="form-control"
-                                        placeholder="Enter phone number">
+
+                                        value="<?php echo $address['phone'] ?? ''; ?>"
+
+                                        required>
 
                                 </div>
 
@@ -273,12 +397,20 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-12 mb-3">
 
                                     <label class="form-label">
+
                                         Full Address
+
                                     </label>
 
-                                    <textarea class="form-control"
+                                    <textarea
+
+                                        name="address"
+
+                                        class="form-control"
+
                                         rows="4"
-                                        placeholder="Enter full address"></textarea>
+
+                                        required><?php echo $address['address'] ?? ''; ?></textarea>
 
                                 </div>
 
@@ -286,11 +418,20 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-md-4 mb-3">
 
                                     <label class="form-label">
+
                                         City
+
                                     </label>
 
                                     <input type="text"
-                                        class="form-control">
+
+                                        name="city"
+
+                                        class="form-control"
+
+                                        value="<?php echo $address['city'] ?? ''; ?>"
+
+                                        required>
 
                                 </div>
 
@@ -298,11 +439,20 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-md-4 mb-3">
 
                                     <label class="form-label">
+
                                         State
+
                                     </label>
 
                                     <input type="text"
-                                        class="form-control">
+
+                                        name="state"
+
+                                        class="form-control"
+
+                                        value="<?php echo $address['state'] ?? ''; ?>"
+
+                                        required>
 
                                 </div>
 
@@ -310,15 +460,36 @@ while($row = mysqli_fetch_assoc($query)){
                                 <div class="col-md-4 mb-3">
 
                                     <label class="form-label">
+
                                         PIN Code
+
                                     </label>
 
                                     <input type="number"
-                                        class="form-control">
+
+                                        name="pincode"
+
+                                        class="form-control"
+
+                                        value="<?php echo $address['pincode'] ?? ''; ?>"
+
+                                        required>
 
                                 </div>
 
                             </div>
+
+                            <button
+
+                                type="submit"
+
+                                name="save_address"
+
+                                class="btn btn-dark">
+
+                                Save Address
+
+                            </button>
 
                         </form>
 
@@ -407,7 +578,6 @@ while($row = mysqli_fetch_assoc($query)){
             <!-- Right Side -->
             <div class="col-lg-4">
 
-                <!-- Price Summary -->
                 <?php
 
                 $price_query = mysqli_query(
@@ -416,42 +586,25 @@ while($row = mysqli_fetch_assoc($query)){
 
                     "SELECT
 
-                     order_summary.quantity,
+        SUM(order_summary.quantity) AS total_items,
 
-                     products.product_price
+        SUM(products.product_price * order_summary.quantity) AS total_price
 
-                     FROM order_summary
+        FROM order_summary
 
-                     INNER JOIN products
+        INNER JOIN products
 
-                     ON order_summary.product_id = products.id
+        ON order_summary.product_id = products.id
 
-                     WHERE order_summary.user_id='$user_id'"
+        WHERE order_summary.user_id='$user_id'"
 
-                                 );
+                );
 
-                $total_items = 0;
+                $data = mysqli_fetch_assoc($price_query);
 
-                $total_price = 0;
+                $total_items = $data['total_items'] ?? 0;
 
-                while ($item = mysqli_fetch_assoc($price_query)) {
-
-                    $total_items += $item['quantity'];
-
-                    $total_price +=
-                        $item['product_price']
-                        *
-                        $item['quantity'];
-                }
-
-                $discount = 1000; // Change if needed
-
-                $final_amount = $total_price - $discount;
-
-                if ($final_amount < 0) {
-
-                    $final_amount = 0;
-                }
+                $total_price = $data['total_price'] ?? 0;
 
                 ?>
 
@@ -467,6 +620,7 @@ while($row = mysqli_fetch_assoc($query)){
                         </h4>
 
                         <!-- Product Price -->
+
                         <div class="d-flex justify-content-between mb-3">
 
                             <span>
@@ -477,13 +631,14 @@ while($row = mysqli_fetch_assoc($query)){
 
                             <span>
 
-                                ₹<?php echo $total_price; ?>
+                                ₹<?php echo number_format($total_price); ?>
 
                             </span>
 
                         </div>
 
-                        <!-- Delivery -->
+                        <!-- Delivery Charges -->
+
                         <div class="d-flex justify-content-between mb-3">
 
                             <span>
@@ -500,26 +655,10 @@ while($row = mysqli_fetch_assoc($query)){
 
                         </div>
 
-                        <!-- Discount -->
-                        <div class="d-flex justify-content-between mb-3">
-
-                            <span>
-
-                                Discount
-
-                            </span>
-
-                            <span class="text-danger">
-
-                                - ₹<?php echo $discount; ?>
-
-                            </span>
-
-                        </div>
-
                         <hr>
 
-                        <!-- Total -->
+                        <!-- Total Amount -->
+
                         <div class="d-flex justify-content-between fw-bold fs-5">
 
                             <span>
@@ -530,18 +669,34 @@ while($row = mysqli_fetch_assoc($query)){
 
                             <span class="text-success">
 
-                                ₹<?php echo $final_amount; ?>
+                                ₹<?php echo number_format($total_price); ?>
 
                             </span>
 
                         </div>
 
-                        <!-- Button -->
-                        <button class="btn btn-dark w-100 mt-4 py-3">
+                        <!-- Place Order Button -->
 
-                            Place Order
+                        <?php if ($total_items > 0) { ?>
 
-                        </button>
+                            <a href="place-order.php"
+                                class="btn btn-dark w-100 mt-4 py-3">
+
+                                Place Order
+
+                            </a>
+
+                        <?php } else { ?>
+
+                            <button
+                                class="btn btn-secondary w-100 mt-4 py-3"
+                                disabled>
+
+                                No Items Found
+
+                            </button>
+
+                        <?php } ?>
 
                     </div>
 

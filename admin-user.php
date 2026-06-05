@@ -1,99 +1,28 @@
 <?php
 
-
 include 'admin-session.php';
-
-
 
 include 'connect.php';
 
-/* Add Feedback */
-
-if (isset($_POST['add_feedback'])) {
-
-    $customer_name = $_POST['customer_name'];
-
-    $rating = $_POST['rating'];
-
-    $message = $_POST['message'];
-
-    $image = $_FILES['image']['name'];
-
-    $tmp_name = $_FILES['image']['tmp_name'];
-
-    move_uploaded_file(
-
-        $tmp_name,
-
-        "uploads/" . $image
-
-    );
-
-    mysqli_query(
-
-        $conn,
-
-        "INSERT INTO feedback(
-
-        customer_name,
-        image,
-        rating,
-        message
-
-        )
-
-        VALUES(
-
-        '$customer_name',
-        '$image',
-        '$rating',
-        '$message'
-
-        )"
-
-    );
-
-    header("Location: admin-feedback.php");
-
-    exit();
-}
-
-/* Delete Feedback */
+/* Delete User */
 
 if (isset($_GET['delete'])) {
 
     $id = $_GET['delete'];
 
-    $get_image = mysqli_query(
-
-        $conn,
-
-        "SELECT image
-
-        FROM feedback
-
-        WHERE id='$id'"
-
-    );
-
-    $row = mysqli_fetch_assoc($get_image);
-
-    if (!empty($row['image'])) {
-
-        unlink("uploads/" . $row['image']);
-    }
-
     mysqli_query(
 
         $conn,
 
-        "DELETE FROM feedback
+        "DELETE FROM users
 
-        WHERE id='$id'"
+        WHERE id='$id'
+
+        AND role='buyer'"
 
     );
 
-    header("Location: admin-feedback.php");
+    header("Location: admin-users.php");
 
     exit();
 }
@@ -180,8 +109,8 @@ if (isset($_GET['delete'])) {
 
                     <li class="nav-item mb-2">
 
-                        <a href="admin-user.php"
-                            class="nav-link text-white">
+                        <a href="admin-users.php"
+                            class="nav-link text-white bg-primary">
 
                             <i class="bi bi-people"></i>
                             Users
@@ -226,13 +155,14 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-feedback.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white">
 
                             <i class="bi bi-chat-left-text"></i>
                             feedback
 
                         </a>
                     </li>
+
 
 
 
@@ -310,69 +240,10 @@ if (isset($_GET['delete'])) {
                         <?php } ?>
 
                     </div>
-
                 </nav>
 
                 <!-- Dashboard Cards -->
-                <div class="container mt-5">
-
-                    <div class="card shadow mb-4">
-
-                        <div class="card-body">
-
-                            <h3 class="mb-4">
-
-                                Add Feedback
-
-                            </h3>
-
-                            <form method="POST" enctype="multipart/form-data">
-
-                                <input type="text"
-                                    name="customer_name"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Name"
-                                    required>
-
-                                <input type="file"
-                                    name="image"
-                                    class="form-control mb-3"
-                                    required>
-
-                                <select
-                                    name="rating"
-                                    class="form-select mb-3"
-                                    required>
-
-                                    <option value="">Select Rating</option>
-                                    <option value="5">★★★★★</option>
-                                    <option value="4">★★★★☆</option>
-                                    <option value="3">★★★☆☆</option>
-                                    <option value="2">★★☆☆☆</option>
-                                    <option value="1">★☆☆☆☆</option>
-
-                                </select>
-
-                                <textarea
-                                    name="message"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Feedback"
-                                    required></textarea>
-
-                                <button
-                                    type="submit"
-                                    name="add_feedback"
-                                    class="btn btn-dark">
-
-                                    Add Feedback
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
+                <div class="container py-4">
 
                     <div class="card shadow">
 
@@ -380,7 +251,7 @@ if (isset($_GET['delete'])) {
 
                             <h3 class="mb-4">
 
-                                All Feedback
+                                All Buyers
 
                             </h3>
 
@@ -394,9 +265,9 @@ if (isset($_GET['delete'])) {
 
                                             <th>ID</th>
                                             <th>Image</th>
-                                            <th>Customer</th>
-                                            <th>Rating</th>
-                                            <th>Feedback</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
                                             <th>Action</th>
 
                                         </tr>
@@ -413,9 +284,11 @@ if (isset($_GET['delete'])) {
 
                                             "SELECT *
 
-                        FROM feedback
+                            FROM users
 
-                        ORDER BY id DESC"
+                            WHERE role='buyer'
+
+                            ORDER BY id DESC"
 
                                         );
 
@@ -430,33 +303,49 @@ if (isset($_GET['delete'])) {
                                                     <?php echo $row['id']; ?>
 
                                                 </td>
+
                                                 <td>
 
-                                                    <img src="uploads/<?php echo $row['image']; ?>"
+                                                    <?php
 
-                                                        width="60"
+                                                    if (!empty($row['image'])) {
 
-                                                        height="60"
+                                                    ?>
 
-                                                        style="object-fit:cover;border-radius:50%;">
+                                                        <img src="uploads/<?php echo $row['image']; ?>"
+
+                                                            width="60"
+
+                                                            height="60"
+
+                                                            style="object-fit:cover;border-radius:50%;">
+
+                                                    <?php
+
+                                                    } else {
+
+                                                        echo "No Image";
+                                                    }
+
+                                                    ?>
 
                                                 </td>
 
                                                 <td>
 
-                                                    <?php echo $row['customer_name']; ?>
+                                                    <?php echo $row['name']; ?>
 
                                                 </td>
 
                                                 <td>
 
-                                                    <?php echo $row['rating']; ?>/5
+                                                    <?php echo $row['email']; ?>
 
                                                 </td>
 
                                                 <td>
 
-                                                    <?php echo $row['message']; ?>
+                                                    <?php echo ucfirst($row['role']); ?>
 
                                                 </td>
 
@@ -466,7 +355,7 @@ if (isset($_GET['delete'])) {
 
                                                         class="btn btn-danger btn-sm"
 
-                                                        onclick="return confirm('Delete this feedback?')">
+                                                        onclick="return confirm('Delete this buyer?')">
 
                                                         Delete
 
@@ -487,8 +376,8 @@ if (isset($_GET['delete'])) {
                         </div>
 
                     </div>
-
                 </div>
+
             </div>
 
         </div>

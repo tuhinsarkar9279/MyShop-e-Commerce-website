@@ -2,106 +2,41 @@
 
 session_start();
 
+include 'connect.php';
+
 if (!isset($_SESSION['user_id'])) {
 
-    header("Location: user-login.php");
-
+    header("Location:user-login.php");
     exit();
 }
 
-include 'connect.php';
-
 $user_id = $_SESSION['user_id'];
 
 ?>
-<?php
-
-include 'connect.php';
-
-$user_id = $_SESSION['user_id'];
-
-$total_price = 0;
-
-/* Cart Query */
-
-$query = mysqli_query(
-
-    $conn,
-
-    "SELECT
-
-    cart.id AS cart_id,
-
-    cart.quantity,
-
-    products.*
-
-    FROM cart
-
-    JOIN products
-
-    ON cart.product_id = products.id
-
-    WHERE cart.user_id='$user_id'"
-
-);
-
-?>
-
-
-
 
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Cart Page</title>
+    <title>My Orders</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+        <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 
 </head>
 
-
-
 <body class="bg-light">
-    <?php
-
-    $cart_count = 0;
-
-    if (isset($_SESSION['user_id'])) {
-
-        $user_id = $_SESSION['user_id'];
-
-        $cart_query = mysqli_query(
-
-            $conn,
-
-            "SELECT COALESCE(SUM(quantity),0) AS total
-
-        FROM cart
-
-        WHERE user_id='$user_id'"
-
-        );
-
-        $cart_data = mysqli_fetch_assoc($cart_query);
-
-        $cart_count = $cart_data['total'];
-    }
-
-    ?>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
         <div class="container">
 
@@ -114,32 +49,30 @@ $query = mysqli_query(
                 </a>
 
                 <!-- Mobile Toggle -->
+                <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
 
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
                 <!-- Navbar Content -->
                 <div class="collapse navbar-collapse justify-content-between"
                     id="navbarSupportedContent">
 
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto position-relative"
-                        method="GET"
-                        action="search.php">
-
-                        <input
-                            class="form-control pe-5"
+                    <form class="d-flex mx-auto w-50" role="search">
+                        <input class="form-control me-2"
                             type="search"
-                            name="search"
                             placeholder="Search Products..."
-                            required>
+                            aria-label="Search">
 
-                        <button
-                            class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
-                            type="submit">
-
-                            <i class="bi bi-search fs-5"></i>
-
+                        <button class="btn btn-dark" type="submit">
+                            Search
                         </button>
-
                     </form>
 
                     <!-- Right Side Icons -->
@@ -159,11 +92,7 @@ $query = mysqli_query(
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-                                <?php echo $cart_count; ?>
-
-                            </span>
                         </a>
 
                         <!-- Profile -->
@@ -209,21 +138,27 @@ $query = mysqli_query(
     </nav>
 
 
-    <!-- Cart Section -->
-    <section class="container my-5">
+    <div class="container my-5">
 
-        <!-- Heading -->
+
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <h2 class="fw-bold">
-                My Cart
+
+                My Orders
+
             </h2>
 
+            <a href="index.php"
+                class="btn btn-dark">
+
+                Continue Shopping
+
+            </a>
 
         </div>
-        <?php
 
-        $total_price = 0;
+        <?php
 
         $query = mysqli_query(
 
@@ -231,9 +166,7 @@ $query = mysqli_query(
 
             "SELECT
 
-    cart.id AS cart_id,
-
-    cart.quantity,
+    orders.*,
 
     products.product_name,
 
@@ -241,82 +174,140 @@ $query = mysqli_query(
 
     products.product_image
 
-    FROM cart
+    FROM orders
 
     INNER JOIN products
 
-    ON cart.product_id = products.id
+    ON orders.product_id = products.id
 
-    WHERE cart.user_id='$user_id'"
+    WHERE orders.user_id='$user_id'
+
+    ORDER BY orders.id DESC"
 
         );
 
-        while ($row = mysqli_fetch_assoc($query)) {
+        if (mysqli_num_rows($query) > 0) {
 
-            $subtotal =
-                $row['product_price']
-                *
-                $row['quantity'];
-
-            $total_price += $subtotal;
+            while ($row = mysqli_fetch_assoc($query)) {
 
         ?>
 
-            <div class="card shadow-sm mb-3">
+                <div class="card shadow-sm border-0 mb-4">
 
-                <div class="card-body">
+                    <div class="card-body">
 
-                    <div class="row align-items-center">
+                        <div class="row align-items-center">
 
-                        <!-- Product Image -->
-                        <div class="col-md-3">
+                            <!-- Product Image -->
 
-                            <img src="uploads/<?php echo $row['product_image']; ?>"
+                            <div class="col-md-2">
 
-                                class="img-fluid rounded"
+                                <img src="uploads/<?php echo $row['product_image']; ?>"
 
-                                height="120">
+                                    class="img-fluid rounded"
+
+                                    style="height:120px;object-fit:cover;">
+
+                            </div>
+
+                            <!-- Product Details -->
+
+                            <div class="col-md-4">
+
+                                <h5>
+
+                                    <?php echo $row['product_name']; ?>
+
+                                </h5>
+
+                                <p class="text-success fw-bold">
+
+                                    ₹<?php echo $row['product_price']; ?>
+
+                                </p>
+
+                            </div>
+
+                            <!-- Quantity -->
+
+                            <div class="col-md-2">
+
+                                <strong>Qty:</strong>
+
+                                <?php echo $row['quantity']; ?>
+
+                            </div>
+
+                            <!-- Status -->
+
+                            <div class="col-md-2">
+
+                                <strong>Status</strong>
+
+                                <br>
+
+                                <?php
+
+                                if ($row['order_status'] == "Delivered") {
+
+                                    echo "<span class='badge bg-success'>Delivered</span>";
+                                } elseif ($row['order_status'] == "Shipped") {
+
+                                    echo "<span class='badge bg-primary'>Shipped</span>";
+                                } elseif ($row['order_status'] == "Processing") {
+
+                                    echo "<span class='badge bg-warning text-dark'>Processing</span>";
+                                } else {
+
+                                    echo "<span class='badge bg-secondary'>Pending</span>";
+                                }
+
+                                ?>
+
+                            </div>
+
+                            <!-- Order Date -->
+
+                            <div class="col-md-2">
+
+                                <small class="text-muted">
+
+                                    <?php echo date(
+                                        'd M Y',
+                                        strtotime($row['order_date'])
+                                    ); ?>
+
+                                </small>
+
+                            </div>
 
                         </div>
 
-                        <!-- Product Name -->
-                        <div class="col-md-3">
+                        <hr>
 
-                            <h5>
+                        <div>
 
-                                <?php echo $row['product_name']; ?>
+                            <strong>Delivery Address:</strong>
 
-                            </h5>
+                            <br>
 
-                        </div>
+                            <?php echo $row['full_name']; ?>
 
-                        <!-- Price -->
-                        <div class="col-md-2">
+                            <br>
 
-                            ₹<?php echo $row['product_price']; ?>
+                            <?php echo $row['phone']; ?>
 
-                        </div>
+                            <br>
 
-                        <!-- Quantity -->
-                        <div class="col-md-2">
+                            <?php echo $row['address']; ?>,
 
-                            Qty:
-                            <?php echo $row['quantity']; ?>
+                            <?php echo $row['city']; ?>,
 
-                        </div>
+                            <?php echo $row['state']; ?>
 
-                        <!-- Remove -->
-                        <div class="col-md-2">
+                            -
 
-                            <a href="remove-cart.php?id=<?php echo $row['cart_id']; ?>"
-
-                                class="btn btn-danger btn-sm"
-
-                                onclick="return confirm('Remove this item?')">
-
-                                Remove
-
-                            </a>
+                            <?php echo $row['pincode']; ?>
 
                         </div>
 
@@ -324,39 +315,23 @@ $query = mysqli_query(
 
                 </div>
 
+            <?php
+
+            }
+        } else {
+
+            ?>
+
+            <div class="alert alert-info">
+
+                No Orders Found.
+
             </div>
 
         <?php } ?>
 
-        <!-- Total Price -->
 
-        <div class="card shadow-sm mt-4">
-
-            <div class="card-body">
-
-                <h4>
-
-                    Total Amount:
-
-                    <span class="text-success">
-
-                        ₹<?php echo $total_price; ?>
-
-                    </span>
-
-                </h4>
-
-                <a href="checkout.php"
-                    class="btn btn-dark">
-                    Proceed To Checkout
-                </a>
-
-            </div>
-
-        </div>
-
-
-    </section>
+    </div>
     <footer class="bg-dark text-light pt-5 mt-5 pb-3">
 
         <div class="container">
@@ -512,9 +487,6 @@ $query = mysqli_query(
         </div>
 
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

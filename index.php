@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include 'connect.php';
 
 /* Fetch Banner Images */
@@ -8,7 +8,63 @@ $query = "SELECT * FROM banners";
 $result = mysqli_query($conn, $query);
 
 ?>
+<?php
 
+$search = $_GET['search'] ?? '';
+
+if (!empty($search)) {
+
+    $query = mysqli_query(
+
+        $conn,
+
+        "SELECT *
+
+        FROM products
+
+        WHERE product_name LIKE '%$search%'
+
+        OR category LIKE '%$search%'
+
+        ORDER BY id DESC"
+
+    );
+} else {
+
+    $query = mysqli_query(
+
+        $conn,
+
+        "SELECT *
+
+        FROM products
+
+        ORDER BY id DESC"
+
+    );
+}
+
+?>
+<?php
+
+if (mysqli_num_rows($query) == 0) {
+
+    echo "
+
+    <div class='col-12'>
+
+        <div class='alert alert-warning text-center'>
+
+            No Products Found
+
+        </div>
+
+    </div>
+
+    ";
+}
+
+?>
 
 
 <!DOCTYPE html>
@@ -25,6 +81,32 @@ $result = mysqli_query($conn, $query);
 </head>
 
 <body>
+    <?php
+
+    $cart_count = 0;
+
+    if (isset($_SESSION['user_id'])) {
+
+        $user_id = $_SESSION['user_id'];
+
+        $cart_query = mysqli_query(
+
+            $conn,
+
+            "SELECT COALESCE(SUM(quantity),0) AS total
+
+        FROM cart
+
+        WHERE user_id='$user_id'"
+
+        );
+
+        $cart_data = mysqli_fetch_assoc($cart_query);
+
+        $cart_count = $cart_data['total'];
+    }
+
+    ?>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
 
         <div class="container">
@@ -44,16 +126,19 @@ $result = mysqli_query($conn, $query);
 
 
                 <!-- Search Bar -->
-                <form class="d-flex mx-auto position-relative" role="search">
+                <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                    <!-- Search Input -->
-                    <input class="form-control pe-5"
+                    <input
+                        class="form-control pe-5"
                         type="search"
+                        name="search"
                         placeholder="Search Products..."
-                        aria-label="Search">
+                        required>
 
-                    <!-- Search Icon Button -->
-                    <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                         type="submit">
 
                         <i class="bi bi-search fs-5"></i>
@@ -78,6 +163,11 @@ $result = mysqli_query($conn, $query);
                         <i class="bi bi-cart3 fs-4"></i>
 
                         <!-- Cart Count -->
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                            <?php echo $cart_count; ?>
+
+                        </span>
 
                     </a>
 
@@ -273,51 +363,127 @@ $result = mysqli_query($conn, $query);
     <div class="container">
 
         <div class="pro">
-            <div class="card shadow-sm mt-4 border-0" style="width: 18rem;">
+            <div class="row">
 
-                <!-- Product Image -->
-                <img src="https://picsum.photos/id/239/100/200"
-                    class="card-img-top"
-                    alt="Product Image"
-                    height="250px"
-                    style="object-fit: cover;">
+                <?php
 
-                <div class="card-body">
+                $query = mysqli_query(
 
-                    <!-- Product Name -->
-                    <h5 class="card-title">
-                        Wireless Headphone
-                    </h5>
+                    $conn,
 
-                    <!-- Product Price -->
-                    <h6 class="text-success fw-bold">
-                        ₹1,499
-                    </h6>
+                    "SELECT
 
-                    <!-- Product Rating -->
-                    <div class="mb-3 text-warning">
-                        ★★★★☆
-                        <small class="text-dark">(4.5)</small>
+    products.*,
+
+    COUNT(orders.product_id) AS total_sales
+
+    FROM products
+
+    LEFT JOIN orders
+
+    ON products.id = orders.product_id
+
+    WHERE products.status='approved'
+
+    GROUP BY products.id
+
+    ORDER BY total_sales DESC
+
+    LIMIT 4"
+
+                );
+
+                while ($row = mysqli_fetch_assoc($query)) {
+
+                ?>
+
+                    <div class="col-md-3">
+
+                        <div class="card shadow-sm mt-4 border-0 h-100">
+
+                            <!-- Product Image -->
+
+                            <img src="uploads/<?php echo $row['product_image']; ?>"
+
+                                class="card-img-top"
+
+                                height="250"
+
+                                style="object-fit:cover;">
+
+                            <div class="card-body">
+
+                                <!-- Product Name -->
+
+                                <h5 class="card-title">
+
+                                    <?php echo $row['product_name']; ?>
+
+                                </h5>
+
+                                <!-- Product Price -->
+
+                                <h6 class="text-success fw-bold">
+
+                                    ₹<?php echo $row['product_price']; ?>
+
+                                </h6>
+
+                                <!-- Total Sales -->
+
+                                <small class="text-muted">
+
+                                    Sold:
+                                    <?php echo $row['total_sales']; ?>
+
+                                    times
+
+                                </small>
+
+                                <div class="d-flex justify-content-between mt-3">
+
+                                    <form action="add-cart.php" method="GET">
+
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="<?php echo $row['id']; ?>">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-dark">
+
+                                            Add to Cart
+
+                                        </button>
+
+                                    </form>
+
+                                    <a href="add-wishlist.php?id=<?php echo $row['id']; ?>"
+
+                                        class="btn btn-outline-danger">
+
+                                        <ion-icon class="fs-5 mt-1"
+                                            name="heart-outline"></ion-icon>
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <!-- Buttons -->
-                    <div class="d-flex justify-content-between">
+                <?php } ?>
 
-                        <a href="#"
-                            class="btn btn-dark">
-                            Add to Cart
-                        </a>
-
-                        <a href="#"
-                            class="btn align-items-center justify-content-center btn-outline-danger">
-                            <ion-icon class=" fs-4 mt-2" name="heart-outline"></ion-icon>
-                        </a>
-
-                    </div>
-
-                </div>
             </div>
-            <div class="tabb">
+
+
+
+
+            <div class="tabb mt-5">
                 <!-- Heading -->
 
                 <!-- Category Tabs -->
@@ -414,21 +580,29 @@ $result = mysqli_query($conn, $query);
 
                                                 <div class="d-flex justify-content-between">
 
-                                                    <a href="add-cart.php?id=<?php echo $row['id']; ?>"
-                                                        class="btn btn-dark">
+                                                    <form action="add-cart.php" method="GET">
 
-                                                        <i class="bi bi-cart-plus"></i>
-                                                        Add to Cart
+                                                        <input
+                                                            type="hidden"
+                                                            name="id"
+                                                            value="<?php echo $row['id']; ?>">
+
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-dark">
+
+                                                            Add to Cart
+
+                                                        </button>
+
+                                                    </form>
+
+                                                    <a href="add-wishlist.php?id=<?php echo $row['id']; ?>"
+                                                        class="btn btn-outline-danger">
+
+                                                        <i class="bi bi-heart"></i>
 
                                                     </a>
-
-                                                    <a href="wishlist.php?id=<?php echo $row['id']; ?>"
-                                                        class="btn btn-outline-danger fs-4">
-
-                                                        ♥
-
-                                                    </a>
-
                                                 </div>
 
                                             </div>
@@ -455,7 +629,7 @@ $result = mysqli_query($conn, $query);
                 <!-- Bottom Button -->
                 <div class="text-center mt-5">
 
-                    <a href="products.php"
+                    <a href="allproducts.php"
                         class="btn btn-outline-dark px-5">
                         View More Products
                     </a>
@@ -509,7 +683,7 @@ $result = mysqli_query($conn, $query);
 
                         </a>
 
-                        <a href="#"
+                        <a href="allproducts.php"
                             class="btn btn-outline-light btn-lg px-5 py-3 mb-3 fw-bold">
 
                             View All Items

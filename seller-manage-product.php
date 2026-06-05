@@ -144,7 +144,7 @@ if (isset($_POST['submit'])) {
                     <li class="nav-item mb-2">
 
                         <a href="add-products.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white ">
 
                             <i class="bi bi-plus-circle"></i>
                             Add Product
@@ -156,7 +156,7 @@ if (isset($_POST['submit'])) {
                     <li class="nav-item mb-2">
 
                         <a href="seller-manage-product.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white bg-primary">
 
                             <i class="bi bi-box-seam"></i>
                             Manage Products
@@ -262,131 +262,7 @@ if (isset($_POST['submit'])) {
 
 
                     <!-- Add Product Form -->
-                    <form method="POST" enctype="multipart/form-data">
 
-                        <!-- Product Name -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Product Name
-
-                            </label>
-
-                            <input type="text"
-                                name="product_name"
-                                class="form-control"
-                                required>
-
-                        </div>
-
-                        <!-- Price -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Product Price
-
-                            </label>
-
-                            <input type="number"
-                                name="product_price"
-                                class="form-control"
-                                required>
-
-                        </div>
-
-                        <!-- Category Dynamic -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Category
-
-                            </label>
-
-                            <select
-                                name="category_id"
-                                class="form-select"
-                                required>
-
-                                <option value="">
-
-                                    Select Category
-
-                                </option>
-
-                                <?php
-
-                                $cat_query = mysqli_query(
-
-                                    $conn,
-
-                                    "SELECT * FROM categories"
-
-                                );
-
-                                while ($cat = mysqli_fetch_assoc($cat_query)) {
-
-                                ?>
-
-                                    <option value="<?php echo $cat['id']; ?>">
-
-                                        <?php echo $cat['category_name']; ?>
-
-                                    </option>
-
-                                <?php } ?>
-
-                            </select>
-
-                        </div>
-
-                        <!-- Description -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Description
-
-                            </label>
-
-                            <textarea
-                                name="product_description"
-                                class="form-control"
-                                rows="4"></textarea>
-
-                        </div>
-
-                        <!-- Image -->
-                        <div class="mb-3">
-
-                            <label class="form-label">
-
-                                Product Image
-
-                            </label>
-
-                            <input
-                                type="file"
-                                name="product_image"
-                                class="form-control"
-                                required>
-
-                        </div>
-
-                        <!-- Submit -->
-                        <button
-                            type="submit"
-                            name="submit"
-                            class="btn btn-dark">
-
-                            Add Product
-
-                        </button>
-
-                    </form>
-                    <hr class="my-5">
 
                     <h3 class="mb-4">
 

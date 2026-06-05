@@ -49,16 +49,26 @@
                     id="navbarSupportedContent">
 
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto w-50" role="search">
-                        <input class="form-control me-2"
-                            type="search"
-                            placeholder="Search Products..."
-                            aria-label="Search">
+                    <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                        <button class="btn btn-dark" type="submit">
-                            Search
-                        </button>
-                    </form>
+                    <input
+                        class="form-control pe-5"
+                        type="search"
+                        name="search"
+                        placeholder="Search Products..."
+                        required>
+
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        type="submit">
+
+                        <i class="bi bi-search fs-5"></i>
+
+                    </button>
+
+                </form>
 
                     <!-- Right Side Icons -->
                     <div class="d-flex align-items-center gap-3">
@@ -77,9 +87,7 @@
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
+
                         </a>
 
                         <!-- Profile -->

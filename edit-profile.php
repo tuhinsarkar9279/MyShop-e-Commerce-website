@@ -2,49 +2,93 @@
 
 session_start();
 
+include 'connect.php';
+
 if (!isset($_SESSION['user_id'])) {
 
-    header("Location: user-login.php");
+    header("Location:user-login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+/* Update Profile */
+
+if (isset($_POST['update'])) {
+
+    $name = $_POST['name'];
+
+    $email = $_POST['email'];
+
+    $password = $_POST['password'];
+
+    $image = $_FILES['image']['name'];
+
+    if (!empty($image)) {
+
+        move_uploaded_file(
+
+            $_FILES['image']['tmp_name'],
+
+            "uploads/" . $image
+
+        );
+
+        $image_query = ", image='$image'";
+    } else {
+
+        $image_query = "";
+    }
+
+    if (!empty($password)) {
+
+        $password = md5($password);
+
+        $password_query = ", password='$password'";
+    } else {
+
+        $password_query = "";
+    }
+
+    mysqli_query(
+
+        $conn,
+
+        "UPDATE users
+
+        SET
+
+        name='$name',
+        email='$email'
+
+        $password_query
+
+        $image_query
+
+        WHERE id='$user_id'"
+
+    );
+
+    header("Location: profile.php");
 
     exit();
 }
 
-include 'connect.php';
-
-$user_id = $_SESSION['user_id'];
-
-?>
-<?php
-
-include 'connect.php';
-
-$user_id = $_SESSION['user_id'];
-
-$total_price = 0;
-
-/* Cart Query */
+/* Get User Data */
 
 $query = mysqli_query(
 
     $conn,
 
-    "SELECT
+    "SELECT *
 
-    cart.id AS cart_id,
+    FROM users
 
-    cart.quantity,
-
-    products.*
-
-    FROM cart
-
-    JOIN products
-
-    ON cart.product_id = products.id
-
-    WHERE cart.user_id='$user_id'"
+    WHERE id='$user_id'"
 
 );
+
+$user = mysqli_fetch_assoc($query);
 
 ?>
 
@@ -76,32 +120,6 @@ $query = mysqli_query(
 
 
 <body class="bg-light">
-    <?php
-
-    $cart_count = 0;
-
-    if (isset($_SESSION['user_id'])) {
-
-        $user_id = $_SESSION['user_id'];
-
-        $cart_query = mysqli_query(
-
-            $conn,
-
-            "SELECT COALESCE(SUM(quantity),0) AS total
-
-        FROM cart
-
-        WHERE user_id='$user_id'"
-
-        );
-
-        $cart_data = mysqli_fetch_assoc($cart_query);
-
-        $cart_count = $cart_data['total'];
-    }
-
-    ?>
     <nav class="navbar border-bottom navbar-expand-lg bg-body-tertiary mt-1 shadow-sm nav1">
         <div class="container">
 
@@ -114,33 +132,33 @@ $query = mysqli_query(
                 </a>
 
                 <!-- Mobile Toggle -->
-
+                
 
                 <!-- Navbar Content -->
                 <div class="collapse navbar-collapse justify-content-between"
                     id="navbarSupportedContent">
 
                     <!-- Search Bar -->
-                    <form class="d-flex mx-auto position-relative"
-                        method="GET"
-                        action="search.php">
+                  <form class="d-flex mx-auto position-relative"
+                    method="GET"
+                    action="search.php">
 
-                        <input
-                            class="form-control pe-5"
-                            type="search"
-                            name="search"
-                            placeholder="Search Products..."
-                            required>
+                    <input
+                        class="form-control pe-5"
+                        type="search"
+                        name="search"
+                        placeholder="Search Products..."
+                        required>
 
-                        <button
-                            class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
-                            type="submit">
+                    <button
+                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        type="submit">
 
-                            <i class="bi bi-search fs-5"></i>
+                        <i class="bi bi-search fs-5"></i>
 
-                        </button>
+                    </button>
 
-                    </form>
+                </form>
 
                     <!-- Right Side Icons -->
                     <div class="d-flex align-items-center gap-3">
@@ -159,11 +177,7 @@ $query = mysqli_query(
                             <i class="bi bi-cart3 fs-4"></i>
 
                             <!-- Cart Count -->
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-                                <?php echo $cart_count; ?>
-
-                            </span>
                         </a>
 
                         <!-- Profile -->
@@ -210,153 +224,98 @@ $query = mysqli_query(
 
 
     <!-- Cart Section -->
-    <section class="container my-5">
+    <div class="container mt-5">
 
-        <!-- Heading -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h2 class="fw-bold">
-                My Cart
-            </h2>
-
-
-        </div>
-        <?php
-
-        $total_price = 0;
-
-        $query = mysqli_query(
-
-            $conn,
-
-            "SELECT
-
-    cart.id AS cart_id,
-
-    cart.quantity,
-
-    products.product_name,
-
-    products.product_price,
-
-    products.product_image
-
-    FROM cart
-
-    INNER JOIN products
-
-    ON cart.product_id = products.id
-
-    WHERE cart.user_id='$user_id'"
-
-        );
-
-        while ($row = mysqli_fetch_assoc($query)) {
-
-            $subtotal =
-                $row['product_price']
-                *
-                $row['quantity'];
-
-            $total_price += $subtotal;
-
-        ?>
-
-            <div class="card shadow-sm mb-3">
-
-                <div class="card-body">
-
-                    <div class="row align-items-center">
-
-                        <!-- Product Image -->
-                        <div class="col-md-3">
-
-                            <img src="uploads/<?php echo $row['product_image']; ?>"
-
-                                class="img-fluid rounded"
-
-                                height="120">
-
-                        </div>
-
-                        <!-- Product Name -->
-                        <div class="col-md-3">
-
-                            <h5>
-
-                                <?php echo $row['product_name']; ?>
-
-                            </h5>
-
-                        </div>
-
-                        <!-- Price -->
-                        <div class="col-md-2">
-
-                            ₹<?php echo $row['product_price']; ?>
-
-                        </div>
-
-                        <!-- Quantity -->
-                        <div class="col-md-2">
-
-                            Qty:
-                            <?php echo $row['quantity']; ?>
-
-                        </div>
-
-                        <!-- Remove -->
-                        <div class="col-md-2">
-
-                            <a href="remove-cart.php?id=<?php echo $row['cart_id']; ?>"
-
-                                class="btn btn-danger btn-sm"
-
-                                onclick="return confirm('Remove this item?')">
-
-                                Remove
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        <?php } ?>
-
-        <!-- Total Price -->
-
-        <div class="card shadow-sm mt-4">
+        <div class="card shadow">
 
             <div class="card-body">
 
-                <h4>
+                <h3 class="mb-4">
 
-                    Total Amount:
+                    Edit Profile
 
-                    <span class="text-success">
+                </h3>
 
-                        ₹<?php echo $total_price; ?>
+                <form method="POST"
+                    enctype="multipart/form-data">
 
-                    </span>
+                    <div class="mb-3">
 
-                </h4>
+                        <label>Name</label>
 
-                <a href="checkout.php"
-                    class="btn btn-dark">
-                    Proceed To Checkout
-                </a>
+                        <input type="text"
+
+                            name="name"
+
+                            class="form-control"
+
+                            value="<?php echo $user['name']; ?>"
+
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Email</label>
+
+                        <input type="email"
+
+                            name="email"
+
+                            class="form-control"
+
+                            value="<?php echo $user['email']; ?>"
+
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>New Password</label>
+
+                        <input type="password"
+
+                            name="password"
+
+                            class="form-control"
+
+                            placeholder="Leave blank to keep old password">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Profile Image</label>
+
+                        <input type="file"
+
+                            name="image"
+
+                            class="form-control">
+
+                    </div>
+
+                    <button
+
+                        type="submit"
+
+                        name="update"
+
+                        class="btn btn-dark">
+
+                        Update Profile
+
+                    </button>
+
+                </form>
 
             </div>
 
         </div>
 
-
-    </section>
+    </div>
     <footer class="bg-dark text-light pt-5 mt-5 pb-3">
 
         <div class="container">

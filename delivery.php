@@ -1,5 +1,35 @@
 <?php
 
+include 'admin-session.php';
+
+include 'connect.php';
+
+/* Delete Delivery Agent */
+
+if (isset($_GET['delete'])) {
+
+    $id = $_GET['delete'];
+
+    mysqli_query(
+
+        $conn,
+
+        "DELETE FROM users
+
+        WHERE id='$id'
+
+        AND role='delivery'"
+
+    );
+
+    header("Location: admin-delivery-agents.php");
+
+    exit();
+}
+
+?>
+<?php
+
 
 include 'admin-session.php';
 
@@ -205,7 +235,7 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="delivery.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white  bg-primary">
 
                             <i class="bi bi-truck"></i>
                             Delivery Agents
@@ -226,7 +256,7 @@ if (isset($_GET['delete'])) {
                     <li class="nav-item mb-2">
 
                         <a href="admin-feedback.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white">
 
                             <i class="bi bi-chat-left-text"></i>
                             feedback
@@ -315,72 +345,13 @@ if (isset($_GET['delete'])) {
 
                 <!-- Dashboard Cards -->
                 <div class="container mt-5">
-
-                    <div class="card shadow mb-4">
-
-                        <div class="card-body">
-
-                            <h3 class="mb-4">
-
-                                Add Feedback
-
-                            </h3>
-
-                            <form method="POST" enctype="multipart/form-data">
-
-                                <input type="text"
-                                    name="customer_name"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Name"
-                                    required>
-
-                                <input type="file"
-                                    name="image"
-                                    class="form-control mb-3"
-                                    required>
-
-                                <select
-                                    name="rating"
-                                    class="form-select mb-3"
-                                    required>
-
-                                    <option value="">Select Rating</option>
-                                    <option value="5">★★★★★</option>
-                                    <option value="4">★★★★☆</option>
-                                    <option value="3">★★★☆☆</option>
-                                    <option value="2">★★☆☆☆</option>
-                                    <option value="1">★☆☆☆☆</option>
-
-                                </select>
-
-                                <textarea
-                                    name="message"
-                                    class="form-control mb-3"
-                                    placeholder="Customer Feedback"
-                                    required></textarea>
-
-                                <button
-                                    type="submit"
-                                    name="add_feedback"
-                                    class="btn btn-dark">
-
-                                    Add Feedback
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
                     <div class="card shadow">
 
                         <div class="card-body">
 
                             <h3 class="mb-4">
 
-                                All Feedback
+                                Delivery Agents
 
                             </h3>
 
@@ -394,9 +365,9 @@ if (isset($_GET['delete'])) {
 
                                             <th>ID</th>
                                             <th>Image</th>
-                                            <th>Customer</th>
-                                            <th>Rating</th>
-                                            <th>Feedback</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
                                             <th>Action</th>
 
                                         </tr>
@@ -413,64 +384,109 @@ if (isset($_GET['delete'])) {
 
                                             "SELECT *
 
-                        FROM feedback
+                            FROM users
 
-                        ORDER BY id DESC"
+                            WHERE role='delivery'
+
+                            ORDER BY id DESC"
 
                                         );
 
-                                        while ($row = mysqli_fetch_assoc($query)) {
+                                        if (mysqli_num_rows($query) > 0) {
+
+                                            while ($row = mysqli_fetch_assoc($query)) {
 
                                         ?>
 
+                                                <tr>
+
+                                                    <td>
+
+                                                        <?php echo $row['id']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php
+
+                                                        if (!empty($row['image'])) {
+
+                                                        ?>
+
+                                                            <img src="uploads/<?php echo $row['image']; ?>"
+
+                                                                width="60"
+
+                                                                height="60"
+
+                                                                class="rounded-circle"
+
+                                                                style="object-fit:cover;">
+
+                                                        <?php
+
+                                                        } else {
+
+                                                            echo "No Image";
+                                                        }
+
+                                                        ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['name']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <?php echo $row['email']; ?>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <span class="badge bg-primary">
+
+                                                            Delivery Agent
+
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <a href="?delete=<?php echo $row['id']; ?>"
+
+                                                            class="btn btn-danger btn-sm"
+
+                                                            onclick="return confirm('Delete this delivery agent?')">
+
+                                                            <i class="bi bi-trash"></i>
+
+                                                            Delete
+
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <?php
+
+                                            }
+                                        } else {
+
+                                            ?>
+
                                             <tr>
 
-                                                <td>
+                                                <td colspan="6" class="text-center">
 
-                                                    <?php echo $row['id']; ?>
-
-                                                </td>
-                                                <td>
-
-                                                    <img src="uploads/<?php echo $row['image']; ?>"
-
-                                                        width="60"
-
-                                                        height="60"
-
-                                                        style="object-fit:cover;border-radius:50%;">
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['customer_name']; ?>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['rating']; ?>/5
-
-                                                </td>
-
-                                                <td>
-
-                                                    <?php echo $row['message']; ?>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <a href="?delete=<?php echo $row['id']; ?>"
-
-                                                        class="btn btn-danger btn-sm"
-
-                                                        onclick="return confirm('Delete this feedback?')">
-
-                                                        Delete
-
-                                                    </a>
+                                                    No Delivery Agents Found
 
                                                 </td>
 
@@ -487,6 +503,8 @@ if (isset($_GET['delete'])) {
                         </div>
 
                     </div>
+
+
 
                 </div>
             </div>
