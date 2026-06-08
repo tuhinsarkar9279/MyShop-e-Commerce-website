@@ -27,7 +27,7 @@ if (isset($_GET['delivered'])) {
     exit();
 }
 
-if(isset($_POST['cancel_order'])){
+if (isset($_POST['cancel_order'])) {
 
     $order_id = $_POST['order_id'];
 
@@ -56,7 +56,6 @@ if(isset($_POST['cancel_order'])){
     header("Location: delivery-complete.php");
 
     exit();
-
 }
 
 /* Cancel Order */
@@ -136,13 +135,50 @@ if (isset($_GET['cancel'])) {
 
                     </li>
 
+                    <?php
+
+                    $delivery_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                        FROM orders
+
+                            WHERE seller_status='Approved'
+
+                      AND delivery_status='Pending'"
+
+                    );
+
+                    $delivery_data = mysqli_fetch_assoc($delivery_query);
+
+                    $delivery_count = $delivery_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="delivery-agent.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-truck"></i>
-                            Shipping Orders
+                            <span>
+
+                                <i class="bi bi-truck"></i>
+
+                                Shipping Orders
+
+                            </span>
+
+                            <?php if ($delivery_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $delivery_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
@@ -159,14 +195,48 @@ if (isset($_GET['cancel'])) {
                         </a>
 
                     </li>
+                    <?php
+
+                    $out_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                            FROM orders
+
+                         WHERE delivery_status='Out For Delivery'"
+
+                         );
+
+                    $out_data = mysqli_fetch_assoc($out_query);
+
+                    $out_count = $out_data['total'];
+
+                    ?>
 
                     <li class="nav-item mb-2">
 
                         <a href="delivery-complete.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white bg-primary d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-geo-alt"></i>
-                            Out For Delivery
+                            <span>
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                Out For Delivery
+
+                            </span>
+
+                            <?php if ($out_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $out_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
@@ -577,34 +647,32 @@ if (isset($_GET['cancel'])) {
 
 
     <script>
+        function toggleReason(id) {
 
-function toggleReason(id){
+            var reason = document.getElementById(
 
-    var reason = document.getElementById(
+                'reason' + id
 
-        'reason' + id
+            ).value;
 
-    ).value;
+            var other = document.getElementById(
 
-    var other = document.getElementById(
+                'otherReason' + id
 
-        'otherReason' + id
+            );
 
-    );
+            if (reason == 'Other') {
 
-    if(reason == 'Other'){
+                other.style.display = 'block';
 
-        other.style.display = 'block';
+            } else {
 
-    }else{
+                other.style.display = 'none';
 
-        other.style.display = 'none';
+            }
 
-    }
-
-}
-
-</script>
+        }
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -135,13 +135,52 @@ if (isset($_GET['delete'])) {
 
                     </li>
 
+                   <?php
+
+                    $pending_product_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                         FROM products
+
+                     WHERE status='Pending'"
+
+                    );
+
+                    $pending_product_data = mysqli_fetch_assoc(
+
+                        $pending_product_query
+
+                    );
+
+                    $pending_product_count = $pending_product_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="admin-products.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-box-seam"></i>
-                            Products
+                            <span>
+
+                                <i class="bi bi-box-seam"></i>
+
+                                Products
+
+                            </span>
+
+                            <?php if ($pending_product_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $pending_product_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 

@@ -92,18 +92,54 @@ $total_earnings = $earning['total_earnings'] ?? 0;
 
                     </li>
 
+<?php
+
+                    $delivery_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                        FROM orders
+
+                            WHERE seller_status='Approved'
+
+                      AND delivery_status='Pending'"
+
+                    );
+
+                    $delivery_data = mysqli_fetch_assoc($delivery_query);
+
+                    $delivery_count = $delivery_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="delivery-agent.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-truck"></i>
-                            Shipping Orders
+                            <span>
+
+                                <i class="bi bi-truck"></i>
+
+                                Shipping Orders
+
+                            </span>
+
+                            <?php if ($delivery_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $delivery_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
                     </li>
-
                     <li class="nav-item mb-2">
 
                         <a href="delivery-all-orders.php"
@@ -116,13 +152,48 @@ $total_earnings = $earning['total_earnings'] ?? 0;
 
                     </li>
 
+                    <?php
+
+                    $out_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                            FROM orders
+
+                         WHERE delivery_status='Out For Delivery'"
+
+                         );
+
+                    $out_data = mysqli_fetch_assoc($out_query);
+
+                    $out_count = $out_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="delivery-complete.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-geo-alt"></i>
-                            Out For Delivery
+                            <span>
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                Out For Delivery
+
+                            </span>
+
+                            <?php if ($out_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $out_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 

@@ -78,6 +78,8 @@ if (mysqli_num_rows($query) == 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="query.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet"
+        href="https://unpkg.com/aos@2.3.4/dist/aos.css">
 </head>
 
 <body>
@@ -138,7 +140,7 @@ if (mysqli_num_rows($query) == 0) {
                         required>
 
                     <button
-                        class="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                        class=" position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                         type="submit">
 
                         <i class="bi bi-search fs-5"></i>
@@ -163,7 +165,9 @@ if (mysqli_num_rows($query) == 0) {
                         <i class="bi bi-cart3 fs-4"></i>
 
                         <!-- Cart Count -->
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span
+                            id="cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
                             <?php echo $cart_count; ?>
 
@@ -219,7 +223,7 @@ if (mysqli_num_rows($query) == 0) {
 
     <div class="det mx-2 ">
         <!-- Bootstrap Carousel -->
-        <div id="carouselExample" class="carousel slide simg" data-bs-ride="carousel">
+        <div id="carouselExample" class="carousel slide simg" data-aos="zoom-in" data-bs-ride="carousel">
 
             <!-- Indicators -->
             <div class="carousel-indicators">
@@ -360,10 +364,12 @@ if (mysqli_num_rows($query) == 0) {
 
         </div>
     </div>
-    <div class="container">
+    <div class="container " data-aos="fade-up">
+        <h2 class="fw-bold mt-5 mb-4 text-center">Top Selling Products</h2>
 
         <div class="pro">
             <div class="row">
+
 
                 <?php
 
@@ -450,10 +456,11 @@ if (mysqli_num_rows($query) == 0) {
                                             value="<?php echo $row['id']; ?>">
 
                                         <button
-                                            type="submit"
-                                            class="btn btn-dark">
+                                            type="button"
+                                            class="btn btn-dark add-cart-btn"
+                                            data-id="<?php echo $row['id']; ?>">
 
-                                            Add to Cart
+                                            Add To Cart
 
                                         </button>
 
@@ -483,7 +490,7 @@ if (mysqli_num_rows($query) == 0) {
 
 
 
-            <div class="tabb mt-5">
+            <div class="tabb mt-5" data-aos="fade-up">
                 <!-- Heading -->
 
                 <!-- Category Tabs -->
@@ -588,10 +595,11 @@ if (mysqli_num_rows($query) == 0) {
                                                             value="<?php echo $row['id']; ?>">
 
                                                         <button
-                                                            type="submit"
-                                                            class="btn btn-dark">
+                                                            type="button"
+                                                            class="btn btn-dark add-cart-btn"
+                                                            data-id="<?php echo $row['id']; ?>">
 
-                                                            Add to Cart
+                                                            Add To Cart
 
                                                         </button>
 
@@ -639,7 +647,7 @@ if (mysqli_num_rows($query) == 0) {
             </div>
         </div>
         <!-- Offer Section -->
-        <section class="container-fluid py-5 mt-3" style="background:#0b2a4a;">
+        <section class="container-fluid py-5 mt-3" data-aos="fade-up" style="background:#0b2a4a;">
 
             <div class="container">
 
@@ -702,7 +710,7 @@ if (mysqli_num_rows($query) == 0) {
 
 
 
-        <div class="tes">
+        <div class="tes" data-aos="fade-up">
 
 
 
@@ -732,11 +740,11 @@ if (mysqli_num_rows($query) == 0) {
 
                         "SELECT *
 
-    FROM feedback
+                     FROM feedback
 
-    ORDER BY id DESC
+                     ORDER BY id DESC
 
-    LIMIT 6"
+                     LIMIT 6"
 
                     );
 
@@ -817,7 +825,7 @@ if (mysqli_num_rows($query) == 0) {
 
 
         <!-- FAQ Section -->
-        <section class="container my-5">
+        <section class="container my-5" data-aos="fade-up">
 
             <!-- Heading -->
             <div class="text-center mb-5">
@@ -931,29 +939,11 @@ if (mysqli_num_rows($query) == 0) {
 
         </section>
         <!-- Login Register Buttons -->
-        <div class="d-flex justify-content-center align-items-center gap-2">
 
-            <!-- Login Button -->
-            <a href="login.html"
-                class="btn btn-dark">
-
-                Login
-
-            </a>
-
-            <!-- Register Button -->
-            <a href="register.html"
-                class="btn btn-outline-dark">
-
-                Register
-
-            </a>
-
-        </div>
 
     </div>
     <!-- Footer Section -->
-    <footer class="bg-dark text-light pt-5 mt-5 pb-3">
+    <footer class="bg-dark text-light pt-5 mt-5 pb-3" data-aos="fade-up">
 
         <div class="container">
 
@@ -1110,8 +1100,82 @@ if (mysqli_num_rows($query) == 0) {
     </footer>
 
 
+    <div class="modal fade" id="cartSuccessModal" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-body text-center p-4">
+
+                    <i class="bi bi-check-circle-fill text-success"
+                        style="font-size:60px;"></i>
+
+                    <h4 class="mt-3">
+                        Product Added Successfully
+                    </h4>
+
+                    <button
+                        class="btn btn-dark mt-3"
+                        data-bs-dismiss="modal">
+
+                        OK
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
+   <script>
+
+document.querySelectorAll('.add-cart-btn').forEach(btn => {
+
+    btn.addEventListener('click', function(){
+
+        let product_id = this.dataset.id;
+
+        fetch('add-cart.php?id=' + product_id)
+
+        .then(response => response.text())
+
+        .then(count => {
+
+            document.getElementById('cart-count').innerText = count;
+
+            let modal = new bootstrap.Modal(
+
+                document.getElementById('cartSuccessModal')
+
+            );
+
+            modal.show();
+
+        });
+
+    });
+
+});
+
+</script>
+
+
+
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

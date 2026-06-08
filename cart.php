@@ -231,23 +231,23 @@ $query = mysqli_query(
 
             "SELECT
 
-    cart.id AS cart_id,
+                       cart.id AS cart_id,
 
-    cart.quantity,
+                       cart.quantity,
 
-    products.product_name,
+                       products.product_name,
 
-    products.product_price,
+                       products.product_price,
 
-    products.product_image
+                       products.product_image
 
-    FROM cart
+                       FROM cart
 
-    INNER JOIN products
+                       INNER JOIN products
 
-    ON cart.product_id = products.id
+                       ON cart.product_id = products.id
 
-    WHERE cart.user_id='$user_id'"
+                       WHERE cart.user_id='$user_id'"
 
         );
 
@@ -300,8 +300,31 @@ $query = mysqli_query(
                         <!-- Quantity -->
                         <div class="col-md-2">
 
-                            Qty:
-                            <?php echo $row['quantity']; ?>
+                            <div class="d-flex align-items-center">
+
+                                <a href="update-cart.php?action=minus&id=<?php echo $row['cart_id']; ?>"
+
+                                    class="btn btn-outline-dark btn-sm">
+
+                                    -
+
+                                </a>
+
+                                <span class="mx-3 fw-bold">
+
+                                    <?php echo $row['quantity']; ?>
+
+                                </span>
+
+                                <a href="update-cart.php?action=plus&id=<?php echo $row['cart_id']; ?>"
+
+                                    class="btn btn-outline-dark btn-sm">
+
+                                    +
+
+                                </a>
+
+                            </div>
 
                         </div>
 

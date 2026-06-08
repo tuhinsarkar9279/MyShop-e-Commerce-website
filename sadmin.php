@@ -5,6 +5,23 @@ include 'seller-session.php';
 include 'connect.php';
 
 ?>
+<?php
+
+$seller_query = mysqli_query(
+
+    $conn,
+
+    "SELECT *
+
+    FROM users
+
+    WHERE id='$seller_id'"
+
+);
+
+$seller = mysqli_fetch_assoc($seller_query);
+
+?>
 
 
 <!DOCTYPE html>
@@ -86,13 +103,54 @@ include 'connect.php';
 
                     </li>
 
+                    <?php
+
+                    $pending_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                         FROM orders
+
+                         INNER JOIN products
+
+                         ON orders.product_id = products.id
+
+                         WHERE products.seller_id='$seller_id'
+
+                         AND orders.seller_status='Pending'"
+
+                    );
+
+                    $pending_data = mysqli_fetch_assoc($pending_query);
+
+                    $pending_count = $pending_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="seller-orders.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-bag-check"></i>
-                            Orders
+                            <span>
+
+                                <i class="bi bi-bag-check"></i>
+
+                                Orders
+
+                            </span>
+
+                            <?php if ($pending_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $pending_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
@@ -146,9 +204,10 @@ include 'connect.php';
 
                         </span>
 
-                        <?php if (!empty($seller_image)) { ?>
 
-                            <img src="uploads/<?php echo $seller_image; ?>"
+                        <?php if (!empty($seller['image'])) { ?>
+
+                            <img src="uploads/<?php echo $seller['image']; ?>"
 
                                 class="rounded-circle"
 

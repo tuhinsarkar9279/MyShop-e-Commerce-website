@@ -165,13 +165,54 @@ if (isset($_POST['submit'])) {
 
                     </li>
 
+                    <?php
+
+                    $pending_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                         FROM orders
+
+                         INNER JOIN products
+
+                         ON orders.product_id = products.id
+
+                         WHERE products.seller_id='$seller_id'
+
+                         AND orders.seller_status='Pending'"
+
+                    );
+
+                    $pending_data = mysqli_fetch_assoc($pending_query);
+
+                    $pending_count = $pending_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="seller-orders.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-bag-check"></i>
-                            Orders
+                            <span>
+
+                                <i class="bi bi-bag-check"></i>
+
+                                Orders
+
+                            </span>
+
+                            <?php if ($pending_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $pending_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 

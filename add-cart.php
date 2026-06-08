@@ -75,13 +75,22 @@ if(mysqli_num_rows($check) > 0){
 }
 
 /* Go Back */
+$cart_query = mysqli_query(
 
-echo "<script>
+    $conn,
 
-window.history.back();
+    "SELECT COALESCE(SUM(quantity),0) AS total
 
-</script>";
+    FROM cart
+
+    WHERE user_id='$user_id'"
+
+);
+
+$cart_data = mysqli_fetch_assoc($cart_query);
+
+echo $cart_data['total'];
+
 
 exit();
-
 ?>

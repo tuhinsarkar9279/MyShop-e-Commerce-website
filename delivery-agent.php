@@ -82,14 +82,50 @@ if (isset($_POST['update_status'])) {
                         </a>
 
                     </li>
+                    <?php
+
+                    $delivery_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                        FROM orders
+
+                            WHERE seller_status='Approved'
+
+                      AND delivery_status='Pending'"
+
+                    );
+
+                    $delivery_data = mysqli_fetch_assoc($delivery_query);
+
+                    $delivery_count = $delivery_data['total'];
+
+                    ?>
 
                     <li class="nav-item mb-2">
 
                         <a href="delivery-agent.php"
-                            class="nav-link text-white bg-primary">
+                            class="nav-link text-white bg-primary d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-truck"></i>
-                            Shipping Orders
+                            <span>
+
+                                <i class="bi bi-truck"></i>
+
+                                Shipping Orders
+
+                            </span>
+
+                            <?php if ($delivery_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $delivery_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
@@ -107,13 +143,48 @@ if (isset($_POST['update_status'])) {
 
                     </li>
 
+                    <?php
+
+                    $out_query = mysqli_query(
+
+                        $conn,
+
+                        "SELECT COUNT(*) AS total
+
+                            FROM orders
+
+                         WHERE delivery_status='Out For Delivery'"
+
+                    );
+
+                    $out_data = mysqli_fetch_assoc($out_query);
+
+                    $out_count = $out_data['total'];
+
+                    ?>
+
                     <li class="nav-item mb-2">
 
                         <a href="delivery-complete.php"
-                            class="nav-link text-white">
+                            class="nav-link text-white  d-flex justify-content-between align-items-center">
 
-                            <i class="bi bi-geo-alt"></i>
-                            Out For Delivery
+                            <span>
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                Out For Delivery
+
+                            </span>
+
+                            <?php if ($out_count > 0) { ?>
+
+                                <span class="badge bg-danger">
+
+                                    <?php echo $out_count; ?>
+
+                                </span>
+
+                            <?php } ?>
 
                         </a>
 
@@ -144,43 +215,43 @@ if (isset($_POST['update_status'])) {
                         Delivery Dashboard
                     </h4>
 
-<div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
 
-    <span class="me-3 fw-semibold">
+                        <span class="me-3 fw-semibold">
 
-        Welcome,
+                            Welcome,
 
-        <?php echo $delivery_name; ?>
+                            <?php echo $delivery_name; ?>
 
-    </span>
+                        </span>
 
-    <?php if(!empty($delivery_image)){ ?>
+                        <?php if (!empty($delivery_image)) { ?>
 
-        <img src="uploads/<?php echo $delivery_image; ?>"
+                            <img src="uploads/<?php echo $delivery_image; ?>"
 
-            class="rounded-circle"
+                                class="rounded-circle"
 
-            width="45"
+                                width="45"
 
-            height="45"
+                                height="45"
 
-            style="object-fit:cover;">
+                                style="object-fit:cover;">
 
-    <?php }else{ ?>
+                        <?php } else { ?>
 
-        <img src="images/user.jpg"
+                            <img src="images/user.jpg"
 
-            class="rounded-circle"
+                                class="rounded-circle"
 
-            width="45"
+                                width="45"
 
-            height="45"
+                                height="45"
 
-            style="object-fit:cover;">
+                                style="object-fit:cover;">
 
-    <?php } ?>
+                        <?php } ?>
 
-</div>
+                    </div>
 
                 </nav>
 
